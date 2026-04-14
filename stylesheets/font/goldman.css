@@ -1,0 +1,14 @@
+@font-face {
+    font-family: 'Goldman';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Goldman'), url('https://fonts.cdnfonts.com/s/46601/Goldman-Regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'Goldman';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Goldman'), url('https://fonts.cdnfonts.com/s/46601/Goldman-Bold.woff') format('woff');
+}
+
+
