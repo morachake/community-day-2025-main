@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Community Day Kenya 2025 - Photo Booth</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header - borrowed style from your main site */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(45deg, #232f3f, #1a2530);
+            color: white;
+            margin-bottom: 40px;
+            border-radius: 8px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #ff9900;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main content layout */
+        .main-content {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        /* Frame section - simplified */
+        .frame-section {
+            flex: 2;
+            background: white;
+            padding: 0px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .frame-wrapper {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Simple frame header */
+        .frame-header {
+            background: #232f3f;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .frame-header h3 {
+            color: #ff9900;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .frame-header p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Photo area */
+        .photo-area {
+            padding: 0px;
+            min-height: 400px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .collage-grid {
+            width: 100%;
+            height: 360px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .collage-grid.layout-2x2 {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        .collage-grid.layout-1plus3 {
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        .collage-grid.layout-1plus3 .photo-slot:first-child {
+            grid-row: span 2;
+        }
+
+        .collage-grid.layout-row {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .collage-grid.layout-2x1 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .photo-slot {
+            background: #e9ecef;
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-slot:hover {
+            border-color: #ff9900;
+            background: #fff8f0;
+        }
+
+        .photo-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-slot .placeholder {
+            color: #666;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .photo-slot:hover .remove-btn {
+            display: flex;
+        }
+
+        /* Simple frame footer */
+        .frame-footer {
+            background: #ff9900;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        /* Controls section - simplified */
+        .controls-section {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .control-group {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .control-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .control-group h3 {
+            color: #232f3f;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Layout options - simplified */
+        .layout-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .layout-option {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .layout-option:hover {
+            border-color: #ff9900;
+            background: #fff8f0;
+        }
+
+        .layout-option.active {
+            border-color: #ff9900;
+            background: #ff9900;
+            color: white;
+        }
+
+        .layout-preview {
+            width: 50px;
+            height: 30px;
+            margin: 0 auto 8px;
+            display: grid;
+            gap: 2px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 3px;
+        }
+
+        .layout-preview.preview-2x2 {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        .layout-preview.preview-1plus3 {
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        .layout-preview.preview-1plus3 .preview-block:first-child {
+            grid-row: span 2;
+        }
+
+        .layout-preview.preview-row {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .layout-preview.preview-2x1 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .preview-block {
+            background: #666;
+            border-radius: 1px;
+        }
+
+        .layout-option.active .preview-block {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Buttons - borrowing your button style */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px 5px 5px 0;
+        }
+
+        .btn-primary {
+            background: #ff9900;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e68a00;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #232f3f;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #1a2530;
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Select styling */
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+        }
+
+        select:focus {
+            border-color: #ff9900;
+            outline: none;
+        }
+
+        /* Share buttons */
+        .share-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .share-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn.twitter { background: #1DA1F2; }
+        .share-btn.linkedin { background: #0077B5; }
+        .share-btn.facebook { background: #1877F2; }
+        .share-btn.download { background: #28a745; }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        /* Info text */
+        .info-text {
+            font-size: 13px;
+            color: #666;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #ff9900;
+        }
+
+        /* Modal - simplified */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        #camera-preview {
+            width: 100%;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .main-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .frame-wrapper {
+                max-width: 100%;
+            }
+
+            .layout-options {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .share-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Simple animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .photo-slot img {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Simple Header -->
+        <div class="header">
+            <h1>AWS Community Day Kenya 2025</h1>
+            <p>Create memorable photos from Kenya's biggest cloud computing event</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Frame Section -->
+            <div class="frame-section">
+                <div class="frame-wrapper">
+                    <!-- Frame Header -->
+                    <div class="frame-header">
+                        <h3>AWS Community Day Kenya</h3>
+                        <p>14th June 2025 • Build, Innovate, Inspire</p>
+                    </div>
+                    
+                    <!-- Photo Area -->
+                    <div class="photo-area">
+                        <div class="collage-grid layout-2x2" id="collageGrid">
+                            <!-- Photos will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Frame Footer -->
+                    <div class="frame-footer">
+                        <span>@aws_UGkenya</span>
+                        <span>#awscommunitydayke2025</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="controls-section">
+                <!-- Layout Selection -->
+                <div class="control-group">
+                    <h3>Layout</h3>
+                    <div class="layout-options">
+                        <div class="layout-option active" data-layout="2x2">
+                            <div class="layout-preview preview-2x2">
+                                <div class="preview-block"></div>
+                                <div class="preview-block"></div>
+                                <div class="preview-block"></div>
+                                <div class="preview-block"></div>
+                            </div>
+                            <div>2×2 Grid</div>
+                        </div>
+                        <div class="layout-option" data-layout="1plus3">
+                            <div class="layout-preview preview-1plus3">
+                                <div class="preview-block"></div>
+                                <div class="preview-block"></div>
+                                <div class="preview-block"></div>
+                            </div>
+                            <div>Large + 3</div>
+                        </div>
+                        <div class="layout-option" data-layout="row">
+                            <div class="layout-preview preview-row">
+                                <div class="preview-block"></div>
+                                <div class="preview-block"></div>
+                                <div class="preview-block"></div>
+                                <div class="preview-block"></div>
+                            </div>
+                            <div>Row</div>
+                        </div>
+                        <div class="layout-option" data-layout="2x1">
+                            <div class="layout-preview preview-2x1">
+                                <div class="preview-block"></div>
+                                <div class="preview-block"></div>
+                            </div>
+                            <div>2 Side</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Photos -->
+                <div class="control-group">
+                    <h3>Add Photos</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="uploadBtn">Upload Photos</button>
+                        <button class="btn btn-primary" id="cameraBtn">Take Photo</button>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+                    <div class="info-text">
+                        <strong>Tip:</strong> Upload up to 4 photos or drag and drop them onto the frame
+                    </div>
+                </div>
+
+                <!-- Export -->
+                <div class="control-group">
+                    <h3>Export Size</h3>
+                    <select id="exportSize">
+                        <option value="auto">Auto (Platform optimized)</option>
+                        <option value="1080x1080">Instagram Square (1080×1080)</option>
+                        <option value="1200x630">Facebook/Twitter (1200×630)</option>
+                        <option value="1200x1200">Large Square (1200×1200)</option>
+                    </select>
+                </div>
+
+                <!-- Share -->
+                <div class="control-group">
+                    <h3>Share</h3>
+                    <div class="share-grid">
+                        <button class="share-btn twitter" id="shareTwitter">Twitter</button>
+                        <button class="share-btn linkedin" id="shareLinkedIn">LinkedIn</button>
+                        <button class="share-btn facebook" id="shareFacebook">Facebook</button>
+                        <button class="share-btn download" id="downloadBtn">Download</button>
+                    </div>
+                    <div class="info-text">
+                        Use hashtag: <strong>#awscommunitydayke2025</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera Modal -->
+    <div class="modal" id="cameraModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Take Photo</h3>
+                <span class="close-modal" id="closeCamera">&times;</span>
+            </div>
+            <video id="camera-preview" autoplay></video>
+            <canvas id="camera-canvas" style="display: none;"></canvas>
+            <div style="margin-top: 15px;">
+                <button class="btn btn-primary" id="captureBtn">Capture</button>
+                <button class="btn btn-secondary" id="cancelCameraBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simplified JavaScript - keeping core functionality
+        let currentLayout = '2x2';
+        let photos = [];
+        let selectedSlot = null;
+        let mediaStream = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupLayoutButtons();
+            setupPhotoUpload();
+            setupCamera();
+            setupSharing();
+            renderPhotoSlots();
+            enableDragAndDrop();
+        });
+
+        function setupLayoutButtons() {
+            document.querySelectorAll('.layout-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.layout-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    currentLayout = this.dataset.layout;
+                    renderPhotoSlots();
+                });
+            });
+        }
+
+        function renderPhotoSlots() {
+            const collageGrid = document.getElementById('collageGrid');
+            collageGrid.className = `collage-grid layout-${currentLayout}`;
+            collageGrid.innerHTML = '';
+
+            let slotCount = currentLayout === '2x1' ? 2 : 4;
+
+            for (let i = 0; i < slotCount; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'photo-slot';
+                slot.dataset.index = i;
+                
+                const placeholder = document.createElement('div');
+                placeholder.className = 'placeholder';
+                placeholder.textContent = 'Click to add photo';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    removePhoto(i);
+                };
+                
+                slot.appendChild(placeholder);
+                slot.appendChild(removeBtn);
+                slot.addEventListener('click', () => selectSlot(i));
+                collageGrid.appendChild(slot);
+            }
+            
+            photos.forEach((photo, index) => {
+                if (index < slotCount) displayPhoto(photo, index);
+            });
+        }
+
+        function setupPhotoUpload() {
+            const uploadBtn = document.getElementById('uploadBtn');
+            const fileInput = document.getElementById('fileInput');
+            
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files);
+                files.forEach(file => {
+                    if (photos.length < 4) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => addPhoto(e.target.result);
+                        reader.readAsDataURL(file);
+                    }
+                });
+                fileInput.value = '';
+            });
+        }
+
+        function setupCamera() {
+            const cameraBtn = document.getElementById('cameraBtn');
+            const cameraModal = document.getElementById('cameraModal');
+            const closeCamera = document.getElementById('closeCamera');
+            const cancelCameraBtn = document.getElementById('cancelCameraBtn');
+            const captureBtn = document.getElementById('captureBtn');
+            const video = document.getElementById('camera-preview');
+            const canvas = document.getElementById('camera-canvas');
+            
+            cameraBtn.addEventListener('click', async () => {
+                cameraModal.style.display = 'flex';
+                try {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    video.srcObject = mediaStream;
+                } catch (err) {
+                    alert('Camera access denied');
+                    cameraModal.style.display = 'none';
+                }
+            });
+            
+            [closeCamera, cancelCameraBtn].forEach(btn => {
+                btn.addEventListener('click', closeModal);
+            });
+            
+            captureBtn.addEventListener('click', () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                addPhoto(canvas.toDataURL('image/jpeg'));
+                closeModal();
+            });
+            
+            function closeModal() {
+                cameraModal.style.display = 'none';
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => track.stop());
+                    mediaStream = null;
+                }
+            }
+        }
+
+        function selectSlot(index) {
+            selectedSlot = index;
+            document.getElementById('fileInput').click();
+        }
+
+        function addPhoto(photoData) {
+            if (selectedSlot !== null) {
+                photos[selectedSlot] = photoData;
+                displayPhoto(photoData, selectedSlot);
+                selectedSlot = null;
+            } else if (photos.length < 4) {
+                photos.push(photoData);
+                displayPhoto(photoData, photos.length - 1);
+            }
+        }
+
+        function displayPhoto(photoData, index) {
+            const slots = document.querySelectorAll('.photo-slot');
+            if (slots[index]) {
+                const img = document.createElement('img');
+                img.src = photoData;
+                slots[index].innerHTML = '';
+                slots[index].appendChild(img);
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    removePhoto(index);
+                };
+                slots[index].appendChild(removeBtn);
+            }
+        }
+
+        function removePhoto(index) {
+            photos.splice(index, 1);
+            renderPhotoSlots();
+        }
+
+        function setupSharing() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            const shareTwitter = document.getElementById('shareTwitter');
+            const shareLinkedIn = document.getElementById('shareLinkedIn');
+            const shareFacebook = document.getElementById('shareFacebook');
+            
+            downloadBtn.addEventListener('click', () => exportImage('download'));
+            shareTwitter.addEventListener('click', () => exportImage('twitter'));
+            shareLinkedIn.addEventListener('click', () => exportImage('linkedin'));
+            shareFacebook.addEventListener('click', () => exportImage('facebook'));
+        }
+
+        async function exportImage(platform) {
+            if (photos.length === 0) {
+                alert('Please add at least one photo first!');
+                return;
+            }
+            
+            const exportSize = document.getElementById('exportSize').value;
+            let width, height;
+            
+            if (exportSize === 'auto') {
+                width = 1080;
+                height = 1080;
+            } else {
+                [width, height] = exportSize.split('x').map(Number);
+            }
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            
+            // White background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+            
+            await drawFrame(ctx, width, height);
+            
+            canvas.toBlob((blob) => {
+                if (platform === 'download') {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `aws-community-day-kenya-2025-${Date.now()}.jpg`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                } else {
+                    shareToSocial(blob, platform);
+                }
+            }, 'image/jpeg', 0.9);
+        }
+
+        async function drawFrame(ctx, width, height) {
+            const padding = 0 ;
+            const headerHeight = height * 0.12;
+            const footerHeight = height * 0.08;
+            
+            // Header
+            ctx.fillStyle = '#232f3f';
+            ctx.fillRect(padding, padding, width - padding * 2, headerHeight);
+            
+            ctx.fillStyle = '#ff9900';
+            ctx.font = `bold ${width * 0.03}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('AWS Community Day Kenya', width / 2, padding + headerHeight * 0.4);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = `${width * 0.02}px Arial`;
+            ctx.fillText('14th June 2025 • Build, Innovate, Inspire', width / 2, padding + headerHeight * 0.75);
+            
+            // Photo area
+            const photoY = padding + headerHeight + padding * 0.3;
+            const photoHeight = height - headerHeight - footerHeight - padding * 2.5;
+            const photoX = padding + padding * 0.3;
+            const photoWidth = width - padding * 2.6;
+            
+            await drawCollage(ctx, photoX, photoY, photoWidth, photoHeight);
+            
+            // Footer
+            const footerY = height - footerHeight - padding;
+            ctx.fillStyle = '#ff9900';
+            ctx.fillRect(padding, footerY, width - padding * 2, footerHeight);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = `${width * 0.018}px Arial`;
+            ctx.textAlign = 'left';
+            ctx.fillText('@aws_UGkenya', padding + 20, footerY + footerHeight * 0.7);
+            
+            ctx.textAlign = 'right';
+            ctx.fillText('#awscommunitydayke2025', width - padding - 20, footerY + footerHeight * 0.7);
+        }
+
+        async function drawCollage(ctx, x, y, width, height) {
+            const gap = 8;
+            
+            switch (currentLayout) {
+                case '2x2':
+                    const cellWidth = (width - gap) / 2;
+                    const cellHeight = (height - gap) / 2;
+                    
+                    for (let i = 0; i < Math.min(photos.length, 4); i++) {
+                        const row = Math.floor(i / 2);
+                        const col = i % 2;
+                        const cellX = x + col * (cellWidth + gap);
+                        const cellY = y + row * (cellHeight + gap);
+                        await drawPhoto(ctx, photos[i], cellX, cellY, cellWidth, cellHeight);
+                    }
+                    break;
+                    
+                case '1plus3':
+                    if (photos[0]) {
+                        const mainWidth = (width - gap) * 0.65;
+                        await drawPhoto(ctx, photos[0], x, y, mainWidth, height);
+                    }
+                    
+                    const sideWidth = (width - gap) * 0.35;
+                    const sideHeight = (height - gap * 2) / 3;
+                    
+                    for (let i = 1; i < Math.min(photos.length, 4); i++) {
+                        const sideX = x + (width - gap) * 0.65 + gap;
+                        const sideY = y + (i - 1) * (sideHeight + gap);
+                        await drawPhoto(ctx, photos[i], sideX, sideY, sideWidth, sideHeight);
+                    }
+                    break;
+                    
+                case 'row':
+                    const rowWidth = (width - gap * 3) / 4;
+                    for (let i = 0; i < Math.min(photos.length, 4); i++) {
+                        const rowX = x + i * (rowWidth + gap);
+                        await drawPhoto(ctx, photos[i], rowX, y, rowWidth, height);
+                    }
+                    break;
+                    
+                case '2x1':
+                    const halfWidth = (width - gap) / 2;
+                    for (let i = 0; i < Math.min(photos.length, 2); i++) {
+                        const halfX = x + i * (halfWidth + gap);
+                        await drawPhoto(ctx, photos[i], halfX, y, halfWidth, height);
+                    }
+                    break;
+            }
+        }
+
+        function drawPhoto(ctx, photoSrc, x, y, width, height) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const imgRatio = img.width / img.height;
+                   const boxRatio = width / height;
+                   
+                   let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+                   
+                   if (imgRatio > boxRatio) {
+                       drawHeight = height;
+                       drawWidth = height * imgRatio;
+                       offsetX = (width - drawWidth) / 2;
+                   } else {
+                       drawWidth = width;
+                       drawHeight = width / imgRatio;
+                       offsetY = (height - drawHeight) / 2;
+                   }
+                   
+                   ctx.save();
+                   ctx.beginPath();
+                   ctx.rect(x, y, width, height);
+                   ctx.clip();
+                   ctx.drawImage(img, x + offsetX, y + offsetY, drawWidth, drawHeight);
+                   ctx.restore();
+                   resolve();
+               };
+               img.onerror = () => resolve();
+               img.src = photoSrc;
+           });
+       }
+
+       function shareToSocial(blob, platform) {
+           const reader = new FileReader();
+           reader.onloadend = function() {
+               const text = `Amazing experience at AWS Community Day Kenya 2025! #awscommunitydayke2025 #aws #cloudcomputing`;
+               let shareUrl = '';
+               
+               switch (platform) {
+                   case 'twitter':
+                       shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+                       break;
+                   case 'linkedin':
+                       shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&summary=${encodeURIComponent(text)}`;
+                       break;
+                   case 'facebook':
+                       shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(text)}`;
+                       break;
+               }
+               
+               // Download image first
+               const url = URL.createObjectURL(blob);
+               const a = document.createElement('a');
+               a.href = url;
+               a.download = `aws-community-day-kenya-2025-${platform}-${Date.now()}.jpg`;
+               a.click();
+               URL.revokeObjectURL(url);
+               
+               // Open social media
+               if (shareUrl) {
+                   setTimeout(() => {
+                       window.open(shareUrl, '_blank', 'width=600,height=400');
+                       alert(`Image downloaded! Please attach it to your ${platform} post.`);
+                   }, 500);
+               }
+           };
+           reader.readAsDataURL(blob);
+       }
+
+       function enableDragAndDrop() {
+           const photoArea = document.querySelector('.photo-area');
+           
+           photoArea.addEventListener('dragover', (e) => {
+               e.preventDefault();
+               photoArea.style.backgroundColor = '#fff8f0';
+           });
+           
+           photoArea.addEventListener('dragleave', (e) => {
+               e.preventDefault();
+               photoArea.style.backgroundColor = '';
+           });
+           
+           photoArea.addEventListener('drop', (e) => {
+               e.preventDefault();
+               photoArea.style.backgroundColor = '';
+               
+               const files = e.dataTransfer.files;
+               if (files.length > 0) {
+                   Array.from(files).forEach(file => {
+                       if (file.type.startsWith('image/') && photos.length < 4) {
+                           const reader = new FileReader();
+                           reader.onload = (e) => addPhoto(e.target.result);
+                           reader.readAsDataURL(file);
+                       }
+                   });
+               }
+           });
+       }
+
+       // Auto-save functionality
+       setInterval(() => {
+           if (photos.length > 0) {
+               try {
+                   localStorage.setItem('aws-photobooth-photos', JSON.stringify(photos));
+                   localStorage.setItem('aws-photobooth-layout', currentLayout);
+               } catch (e) {
+                   console.log('Unable to save to localStorage');
+               }
+           }
+       }, 10000);
+
+       // Restore on load
+       try {
+           const savedPhotos = localStorage.getItem('aws-photobooth-photos');
+           const savedLayout = localStorage.getItem('aws-photobooth-layout');
+           
+           if (savedPhotos) {
+               const restored = JSON.parse(savedPhotos);
+               if (Array.isArray(restored) && restored.length > 0) {
+                   if (confirm('Restore your previous photo session?')) {
+                       photos = restored;
+                       if (savedLayout) {
+                           currentLayout = savedLayout;
+                           document.querySelector(`[data-layout="${savedLayout}"]`).click();
+                       }
+                       renderPhotoSlots();
+                   } else {
+                       localStorage.removeItem('aws-photobooth-photos');
+                       localStorage.removeItem('aws-photobooth-layout');
+                   }
+               }
+           }
+       } catch (e) {
+           console.log('Unable to restore from localStorage');
+       }
+
+       // Keyboard shortcuts
+       document.addEventListener('keydown', (e) => {
+           if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+               e.preventDefault();
+               exportImage('download');
+           }
+       });
+   </script>
+</body>
+</html>
