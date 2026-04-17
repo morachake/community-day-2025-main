@@ -441,7 +441,7 @@ function buildSpeakerCard(speaker) {
 
 function initRevealAnimations(showcase) {
   const animatedElements = showcase.querySelectorAll(
-    '.history-switcher-card, .event-year-card, .event-overview-card, .event-summary-card, .event-section-card, .highlight-card, .activity-card, .sponsor-logo, .testimonial, .previous-event-speaker-card, .speaker-profile'
+    '.history-switcher-card, .event-year-card, .event-overview-card, .event-summary-card, .event-section-card, .history-note-card, .event-story-card, .highlight-card, .activity-card, .sponsor-logo, .testimonial, .previous-event-speaker-card, .speaker-profile'
   );
 
   const observer = new IntersectionObserver(function (entries, revealObserver) {
