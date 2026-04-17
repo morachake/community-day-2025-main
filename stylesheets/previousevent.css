@@ -53,6 +53,8 @@
   align-items: center;
   padding: 32px;
   margin: 40px 0 26px;
+  position: relative;
+  z-index: 2;
 }
 
 .history-switcher-copy h5 {
@@ -170,6 +172,8 @@
 
 .previous-events-detail {
   margin-top: 6px;
+  position: relative;
+  z-index: 1;
 }
 
 .previous-event-panel {
