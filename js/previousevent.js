@@ -27,10 +27,13 @@ function initYearSelector(showcase) {
       const isActive = card.dataset.eventYear === year;
       card.classList.toggle('active', isActive);
       card.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      card.setAttribute('tabindex', isActive ? '0' : '-1');
     });
 
     panels.forEach(function (panel) {
-      panel.classList.toggle('active', panel.dataset.eventYear === year);
+      const isActive = panel.dataset.eventYear === year;
+      panel.classList.toggle('active', isActive);
+      panel.hidden = !isActive;
     });
   };
 
@@ -38,62 +41,37 @@ function initYearSelector(showcase) {
     card.addEventListener('click', function () {
       activateYear(card.dataset.eventYear);
     });
-  });
-}
 
-function initPanel(panel) {
-  initTabs(panel);
-  initSpeakerCarousel(panel);
-  initTestimonials(panel);
-  initVideoPreview(panel);
-  initGalleryModal(panel);
-  initCounterAnimation(panel);
-  initImageState(panel);
-}
-
-function initTabs(panel) {
-  const tabButtons = Array.from(panel.querySelectorAll('.tab-button'));
-  const tabPanes = Array.from(panel.querySelectorAll('.tab-pane'));
-
-  if (!tabButtons.length || !tabPanes.length) {
-    return;
-  }
-
-  const activateTab = function (tabId) {
-    tabButtons.forEach(function (button) {
-      const isActive = button.dataset.tab === tabId;
-      button.classList.toggle('active', isActive);
-      button.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
-
-    tabPanes.forEach(function (pane) {
-      pane.classList.toggle('active', pane.id === tabId);
-    });
-  };
-
-  tabButtons.forEach(function (button, index) {
-    button.setAttribute('role', 'tab');
-    button.setAttribute('aria-selected', button.classList.contains('active') ? 'true' : 'false');
-    button.setAttribute('aria-controls', button.dataset.tab);
-
-    button.addEventListener('click', function () {
-      activateTab(button.dataset.tab);
-    });
-
-    button.addEventListener('keydown', function (event) {
+    card.addEventListener('keydown', function (event) {
       if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft' && event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
         return;
       }
 
       event.preventDefault();
 
+      const currentIndex = yearCards.indexOf(card);
       const direction = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
-      const nextIndex = (index + direction + tabButtons.length) % tabButtons.length;
+      const nextIndex = (currentIndex + direction + yearCards.length) % yearCards.length;
 
-      tabButtons[nextIndex].focus();
-      activateTab(tabButtons[nextIndex].dataset.tab);
+      yearCards[nextIndex].focus();
+      activateYear(yearCards[nextIndex].dataset.eventYear);
     });
   });
+
+  const activeCard = yearCards.find(function (card) {
+    return card.classList.contains('active');
+  });
+
+  activateYear(activeCard ? activeCard.dataset.eventYear : yearCards[0].dataset.eventYear);
+}
+
+function initPanel(panel) {
+  initSpeakerCarousel(panel);
+  initTestimonials(panel);
+  initVideoPreview(panel);
+  initGalleryModal(panel);
+  initCounterAnimation(panel);
+  initImageState(panel);
 }
 
 function initSpeakerCarousel(panel) {
@@ -463,7 +441,7 @@ function buildSpeakerCard(speaker) {
 
 function initRevealAnimations(showcase) {
   const animatedElements = showcase.querySelectorAll(
-    '.event-year-card, .previous-event-title, .event-banner, .event-tabs, .highlight-card, .activity-card, .sponsor-logo, .testimonial, .previous-event-speaker-card'
+    '.history-switcher-card, .event-year-card, .event-overview-card, .event-summary-card, .event-section-card, .highlight-card, .activity-card, .sponsor-logo, .testimonial, .previous-event-speaker-card, .speaker-profile'
   );
 
   const observer = new IntersectionObserver(function (entries, revealObserver) {
