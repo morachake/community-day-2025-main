@@ -29,12 +29,22 @@
   margin: 35px 0 20px;
 }
 
-.event-year-card {
+.previous-events-selector .event-year-card {
+  appearance: none;
   border: 1px solid rgba(35, 47, 63, 0.12);
   border-radius: 14px;
   background: white;
   padding: 24px;
+  min-height: 160px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10px;
   text-align: left;
+  line-height: 1.5;
+  color: #232F3F;
   width: 100%;
   cursor: pointer;
   font: inherit;
@@ -42,21 +52,23 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.event-year-card:hover,
-.event-year-card:focus {
+.previous-events-selector .event-year-card:hover,
+.previous-events-selector .event-year-card:focus {
   transform: translateY(-4px);
   box-shadow: 0 16px 32px rgba(35, 47, 63, 0.12);
   border-color: rgba(255, 153, 0, 0.45);
   outline: none;
 }
 
-.event-year-card.active {
+.previous-events-selector .event-year-card.active {
   background: linear-gradient(135deg, #232F3F 0%, #1A2530 100%);
   border-color: #FF9900;
 }
 
-.event-year-card-tag {
-  display: inline-block;
+.previous-events-selector .event-year-card .event-year-card-tag {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
   padding: 6px 12px;
   border-radius: 999px;
   background: rgba(255, 153, 0, 0.12);
@@ -65,29 +77,33 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 14px;
+  line-height: 1.2;
+  margin: 0;
 }
 
-.event-year-card.active .event-year-card-tag {
+.previous-events-selector .event-year-card.active .event-year-card-tag {
   background: rgba(255, 255, 255, 0.14);
   color: #FF9900;
 }
 
-.event-year-card h5 {
-  margin: 0 0 8px;
+.previous-events-selector .event-year-card h5 {
+  margin: 0;
   color: #232F3F;
   font-size: 24px;
   font-weight: 700;
+  line-height: 1.25;
 }
 
-.event-year-card p {
+.previous-events-selector .event-year-card p {
   margin: 0;
   color: #5b6670;
   font-size: 15px;
+  line-height: 1.6;
+  white-space: normal;
 }
 
-.event-year-card.active h5,
-.event-year-card.active p {
+.previous-events-selector .event-year-card.active h5,
+.previous-events-selector .event-year-card.active p {
   color: white;
 }
 
@@ -1014,11 +1030,11 @@
     padding: 50px 0;
   }
 
-  .event-year-card {
+  .previous-events-selector .event-year-card {
     padding: 20px;
   }
 
-  .event-year-card h5 {
+  .previous-events-selector .event-year-card h5 {
     font-size: 21px;
   }
 
