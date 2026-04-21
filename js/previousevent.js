@@ -57,6 +57,13 @@ function initYearSelector(showcase) {
 
     showcase.setAttribute('data-active-event-year', targetCard.dataset.eventYear || '');
 
+    const activeCarousel = targetPanel.querySelector('.speakers-carousel');
+    if (activeCarousel) {
+      window.requestAnimationFrame(function () {
+        activeCarousel.dispatchEvent(new CustomEvent('speaker-carousel:refresh'));
+      });
+    }
+
     if (settings.focus) {
       targetCard.focus({ preventScroll: true });
     }
@@ -131,42 +138,143 @@ function initPanel(panel) {
 
 function initSpeakerCarousel(panel) {
   const carousel = panel.querySelector('.speakers-carousel');
-  const profiles = carousel ? Array.from(carousel.querySelectorAll('.speaker-profile')) : [];
+  const slides = carousel ? Array.from(carousel.querySelectorAll('.speaker-profile, .previous-event-speaker-card')) : [];
   const prevButton = panel.querySelector('.speaker-prev');
   const nextButton = panel.querySelector('.speaker-next');
   const dotsContainer = panel.querySelector('.speaker-dots');
+  const isHighlightCarousel = carousel ? carousel.dataset.speakersMode === 'highlight' : false;
 
-  if (!carousel || !profiles.length || !prevButton || !nextButton || !dotsContainer) {
+  if (!carousel || !slides.length || !prevButton || !nextButton || !dotsContainer) {
     return;
   }
 
   let currentIndex = 0;
+  let currentPage = 0;
+  let resizeFrame = 0;
 
-  const goToSpeaker = function (index) {
-    currentIndex = (index + profiles.length) % profiles.length;
+  dotsContainer.innerHTML = '';
+
+  const getSlidesPerView = function () {
+    if (!isHighlightCarousel) {
+      return 1;
+    }
+
+    if (window.innerWidth <= 767) {
+      return 1;
+    }
+
+    if (window.innerWidth <= 1199) {
+      return 2;
+    }
+
+    return 4;
+  };
+
+  const scrollToSlide = function (index, behavior) {
+    const safeIndex = Math.max(0, Math.min(index, slides.length - 1));
+    const target = slides[safeIndex];
+
+    if (!target) {
+      return;
+    }
+
     carousel.scrollTo({
-      left: profiles[currentIndex].offsetLeft,
-      behavior: 'smooth'
-    });
-
-    Array.from(dotsContainer.querySelectorAll('.speaker-dot')).forEach(function (dot, dotIndex) {
-      dot.classList.toggle('active', dotIndex === currentIndex);
+      left: target.offsetLeft,
+      behavior: behavior || 'smooth'
     });
   };
 
-  profiles.forEach(function (_, index) {
-    const dot = document.createElement('button');
-    dot.type = 'button';
-    dot.className = 'speaker-dot' + (index === 0 ? ' active' : '');
-    dot.setAttribute('aria-label', 'View speaker ' + (index + 1));
-    dot.addEventListener('click', function () {
-      goToSpeaker(index);
+  const updateActiveDot = function (activeIndex) {
+    Array.from(dotsContainer.querySelectorAll('.speaker-dot')).forEach(function (dot, dotIndex) {
+      dot.classList.toggle('active', dotIndex === activeIndex);
     });
-    dotsContainer.appendChild(dot);
-  });
+  };
+
+  const renderDots = function (count, labelPrefix, clickHandler) {
+    dotsContainer.innerHTML = '';
+
+    for (let index = 0; index < count; index += 1) {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'speaker-dot' + (index === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', labelPrefix + ' ' + (index + 1));
+      dot.addEventListener('click', function () {
+        clickHandler(index);
+      });
+      dotsContainer.appendChild(dot);
+    }
+  };
+
+  const refreshStandardCarousel = function (behavior) {
+    scrollToSlide(currentIndex, behavior || 'auto');
+    updateActiveDot(currentIndex);
+    prevButton.disabled = false;
+    nextButton.disabled = false;
+  };
+
+  const refreshHighlightCarousel = function (behavior) {
+    const slidesPerView = getSlidesPerView();
+    const pageCount = Math.max(1, Math.ceil(slides.length / slidesPerView));
+
+    carousel.style.setProperty('--speaker-cards-per-view', String(slidesPerView));
+    currentPage = Math.max(0, Math.min(currentPage, pageCount - 1));
+    currentIndex = currentPage * slidesPerView;
+
+    renderDots(pageCount, 'View speaker group', function (pageIndex) {
+      goToPage(pageIndex);
+    });
+
+    scrollToSlide(currentIndex, behavior || 'auto');
+    updateActiveDot(currentPage);
+    prevButton.disabled = currentPage === 0;
+    nextButton.disabled = currentPage === pageCount - 1;
+  };
+
+  const goToSpeaker = function (index) {
+    currentIndex = (index + slides.length) % slides.length;
+    refreshStandardCarousel('smooth');
+  };
+
+  const goToPage = function (page) {
+    const pageCount = Math.max(1, Math.ceil(slides.length / getSlidesPerView()));
+    currentPage = Math.max(0, Math.min(page, pageCount - 1));
+    refreshHighlightCarousel('smooth');
+  };
 
   prevButton.setAttribute('aria-label', 'Previous speaker');
   nextButton.setAttribute('aria-label', 'Next speaker');
+
+  if (isHighlightCarousel) {
+    prevButton.addEventListener('click', function () {
+      goToPage(currentPage - 1);
+    });
+
+    nextButton.addEventListener('click', function () {
+      goToPage(currentPage + 1);
+    });
+
+    const refreshCarousel = function (behavior) {
+      refreshHighlightCarousel(behavior);
+    };
+
+    carousel.addEventListener('speaker-carousel:refresh', function () {
+      refreshCarousel('auto');
+    });
+
+    window.addEventListener('resize', function () {
+      window.cancelAnimationFrame(resizeFrame);
+      resizeFrame = window.requestAnimationFrame(function () {
+        refreshCarousel('auto');
+      });
+    });
+
+    refreshCarousel('auto');
+    return;
+  }
+
+  renderDots(slides.length, 'View speaker', function (index) {
+    goToSpeaker(index);
+  });
 
   prevButton.addEventListener('click', function () {
     goToSpeaker(currentIndex - 1);
@@ -175,6 +283,12 @@ function initSpeakerCarousel(panel) {
   nextButton.addEventListener('click', function () {
     goToSpeaker(currentIndex + 1);
   });
+
+  carousel.addEventListener('speaker-carousel:refresh', function () {
+    refreshStandardCarousel('auto');
+  });
+
+  refreshStandardCarousel('auto');
 }
 
 function initTestimonials(panel) {
@@ -395,6 +509,8 @@ function hydrate2025SpeakerGrid(showcase) {
   const sources = Array.from(document.querySelectorAll('#speakers .confirmed-speaker-card, #speakers .desktop-only .speaker-card'));
   const seenNames = new Set();
 
+  container.innerHTML = '';
+
   sources.forEach(function (source) {
     const speakerData = getSpeakerData(source);
     if (!speakerData || seenNames.has(speakerData.name)) {
@@ -461,7 +577,7 @@ function buildSpeakerCard(speaker) {
   const meta = document.createElement('p');
   const summary = document.createElement('p');
 
-  card.className = 'previous-event-speaker-card';
+  card.className = 'previous-event-speaker-card speaker-carousel-slide';
   imageWrap.className = 'previous-event-speaker-image';
   badge.className = 'previous-event-speaker-badge';
   content.className = 'previous-event-speaker-content';
