@@ -15,85 +15,118 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function initYearSelector(showcase) {
+  const tabList = showcase.querySelector('.previous-events-selector');
   const yearCards = Array.from(showcase.querySelectorAll('.event-year-card'));
   const panels = Array.from(showcase.querySelectorAll('.previous-event-panel'));
 
-  if (!yearCards.length || !panels.length) {
+  if (!tabList || !yearCards.length || !panels.length) {
     return;
   }
 
-  const activateYear = function (year) {
+  const getPanelForCard = function (card) {
+    const controls = card.getAttribute('aria-controls');
+    return controls ? showcase.querySelector('#' + controls) : null;
+  };
+
+  const activateCard = function (targetCard, options) {
+    const settings = options || {};
+    const targetPanel = getPanelForCard(targetCard);
+
+    if (!targetCard || !targetPanel) {
+      return;
+    }
+
     yearCards.forEach(function (card) {
-      const isActive = card.dataset.eventYear === year;
+      const isActive = card === targetCard;
       card.classList.toggle('active', isActive);
       card.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      card.setAttribute('tabindex', isActive ? '0' : '-1');
     });
 
     panels.forEach(function (panel) {
-      panel.classList.toggle('active', panel.dataset.eventYear === year);
+      const isActive = panel === targetPanel;
+      panel.classList.toggle('active', isActive);
+      panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+
+      if (isActive) {
+        panel.removeAttribute('hidden');
+      } else {
+        panel.setAttribute('hidden', 'hidden');
+      }
     });
+
+    showcase.setAttribute('data-active-event-year', targetCard.dataset.eventYear || '');
+
+    if (settings.focus) {
+      targetCard.focus({ preventScroll: true });
+    }
   };
 
+  tabList.addEventListener('click', function (event) {
+    const clickedCard = event.target.closest('.event-year-card');
+
+    if (!clickedCard || !tabList.contains(clickedCard)) {
+      return;
+    }
+
+    event.preventDefault();
+    activateCard(clickedCard);
+  });
+
   yearCards.forEach(function (card) {
-    card.addEventListener('click', function () {
-      activateYear(card.dataset.eventYear);
+    card.addEventListener('keydown', function (event) {
+      if (
+        event.key !== 'ArrowRight' &&
+        event.key !== 'ArrowLeft' &&
+        event.key !== 'ArrowDown' &&
+        event.key !== 'ArrowUp' &&
+        event.key !== 'Home' &&
+        event.key !== 'End' &&
+        event.key !== 'Enter' &&
+        event.key !== ' '
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      if (event.key === 'Enter' || event.key === ' ') {
+        activateCard(card);
+        return;
+      }
+
+      if (event.key === 'Home') {
+        activateCard(yearCards[0], { focus: true });
+        return;
+      }
+
+      if (event.key === 'End') {
+        activateCard(yearCards[yearCards.length - 1], { focus: true });
+        return;
+      }
+
+      const currentIndex = yearCards.indexOf(card);
+      const direction = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
+      const nextIndex = (currentIndex + direction + yearCards.length) % yearCards.length;
+
+      activateCard(yearCards[nextIndex], { focus: true });
     });
   });
+
+  const activeCard = yearCards.find(function (card) {
+    return card.classList.contains('active');
+  });
+
+  activateCard(activeCard || yearCards[0]);
 }
 
 function initPanel(panel) {
-  initTabs(panel);
   initSpeakerCarousel(panel);
   initTestimonials(panel);
   initVideoPreview(panel);
   initGalleryModal(panel);
   initCounterAnimation(panel);
   initImageState(panel);
-}
-
-function initTabs(panel) {
-  const tabButtons = Array.from(panel.querySelectorAll('.tab-button'));
-  const tabPanes = Array.from(panel.querySelectorAll('.tab-pane'));
-
-  if (!tabButtons.length || !tabPanes.length) {
-    return;
-  }
-
-  const activateTab = function (tabId) {
-    tabButtons.forEach(function (button) {
-      const isActive = button.dataset.tab === tabId;
-      button.classList.toggle('active', isActive);
-      button.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
-
-    tabPanes.forEach(function (pane) {
-      pane.classList.toggle('active', pane.id === tabId);
-    });
-  };
-
-  tabButtons.forEach(function (button, index) {
-    button.setAttribute('role', 'tab');
-    button.setAttribute('aria-selected', button.classList.contains('active') ? 'true' : 'false');
-    button.setAttribute('aria-controls', button.dataset.tab);
-
-    button.addEventListener('click', function () {
-      activateTab(button.dataset.tab);
-    });
-
-    button.addEventListener('keydown', function (event) {
-      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft' && event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
-        return;
-      }
-
-      event.preventDefault();
-
-      const direction = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
-      const nextIndex = (index + direction + tabButtons.length) % tabButtons.length;
-
-      tabButtons[nextIndex].focus();
-      activateTab(tabButtons[nextIndex].dataset.tab);
-    });
-  });
 }
 
 function initSpeakerCarousel(panel) {
@@ -463,7 +496,7 @@ function buildSpeakerCard(speaker) {
 
 function initRevealAnimations(showcase) {
   const animatedElements = showcase.querySelectorAll(
-    '.event-year-card, .previous-event-title, .event-banner, .event-tabs, .highlight-card, .activity-card, .sponsor-logo, .testimonial, .previous-event-speaker-card'
+    '.history-switcher-card, .event-year-card, .event-overview-card, .event-summary-card, .event-section-card, .history-note-card, .event-story-card, .highlight-card, .activity-card, .sponsor-logo, .testimonial, .previous-event-speaker-card, .speaker-profile'
   );
 
   const observer = new IntersectionObserver(function (entries, revealObserver) {
