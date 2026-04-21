@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const panels = showcase.querySelectorAll('.previous-event-panel');
   panels.forEach(initPanel);
 
-  initRevealAnimations(showcase);
 });
 
 function initYearSelector(showcase) {
