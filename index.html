@@ -198,10 +198,45 @@
     <link rel="preload" href="/stylesheets/style.css" as="style">
     <link rel="preload" href="/images/community-day-logo.png" as="image">
 
+    <script>
+        (function() {
+            var restorableHashes = {
+                "#home": true,
+                "#werner-vogels-keynote": true,
+                "#speakers": true,
+                "#agenda": true,
+                "#previous-events": true,
+                "#com_info": true,
+                "#venues": true,
+                "#workshop": true,
+                "#sponsors": true,
+                "#volunteers": true,
+                "#subscribe": true
+            };
+            var hash = window.location.hash;
+            var shouldRestore = !!restorableHashes[hash];
+
+            if ("scrollRestoration" in window.history) {
+                window.history.scrollRestoration = "manual";
+            }
+
+            window.__initialSectionRestore = {
+                hash: hash,
+                shouldRestore: shouldRestore,
+                completed: false
+            };
+
+            if (shouldRestore) {
+                document.documentElement.classList.add("is-restoring-section");
+            }
+        })();
+    </script>
+
     <!-- Critical CSS (inline) -->
     <style>
         /* Critical above-the-fold CSS */
         body { margin: 0; font-family: Arial, sans-serif; }
+        html.is-restoring-section body { visibility: hidden; }
         .section-1 { min-height: 100vh; background: linear-gradient(45deg, #232f3f, #1a2530); }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
         .headin_h4 { color: #ff9900; font-weight: 700; }
@@ -3449,7 +3484,7 @@
         </div>
 
 
-        <div class="section section-4 inv" style="padding-top: 0%; margin-top: 0%;" id="agenda">
+        <div class="section section-4 inv" style="padding-top: 0%; margin-top: 0%;" id="agenda-summary">
             <div class="container">
                 <div class="sponsors">
                     <!-- <h4 class="main-heading-ttl text-center" >Agenda</h4> -->
