@@ -836,6 +836,21 @@
   gap: 8px;
 }
 
+.speaker-dots.is-fraction {
+  justify-content: center;
+  min-width: 76px;
+}
+
+.carousel-fraction {
+  min-width: 76px;
+  color: var(--history-text);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
 .speaker-dot,
 .testimonial-dot {
   width: 10px;
@@ -1109,9 +1124,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .speaker-grid-showcase.speakers-carousel + .speakers-navigation .speaker-dots {
-    display: none;
-  }
 }
 
 @media (max-width: 991px) {
@@ -1274,10 +1286,22 @@
     flex-wrap: wrap;
   }
 
+  .speakers-navigation.highlight-pagination {
+    display: grid;
+    grid-template-columns: 48px minmax(76px, auto) 48px;
+    justify-content: center;
+    gap: 12px;
+  }
+
   .speaker-dots,
   .testimonial-dots {
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .speakers-navigation.highlight-pagination .speaker-dots.is-fraction {
+    flex-wrap: nowrap;
+    gap: 0;
   }
 }
 
