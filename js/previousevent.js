@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const panels = showcase.querySelectorAll('.previous-event-panel');
   panels.forEach(initPanel);
 
-  initRevealAnimations(showcase);
 });
 
 function initYearSelector(showcase) {
@@ -47,9 +46,11 @@ function initYearSelector(showcase) {
       const isActive = panel === targetPanel;
       panel.classList.toggle('active', isActive);
       panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+      panel.classList.toggle('panel-animate-once', isActive && panel.dataset.hasAnimated !== 'true');
 
       if (isActive) {
         panel.removeAttribute('hidden');
+        panel.dataset.hasAnimated = 'true';
       } else {
         panel.setAttribute('hidden', 'hidden');
       }
@@ -190,10 +191,13 @@ function initSpeakerCarousel(panel) {
     }
 
     if (isHighlightCarousel) {
-      target.scrollIntoView({
-        behavior: behavior || 'smooth',
-        block: 'nearest',
-        inline: 'start'
+      const viewportRect = scrollViewport.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const left = scrollViewport.scrollLeft + (targetRect.left - viewportRect.left);
+
+      scrollViewport.scrollTo({
+        left: left,
+        behavior: behavior || 'smooth'
       });
       return;
     }
@@ -648,7 +652,7 @@ function buildSpeakerCard(speaker) {
 
 function initRevealAnimations(showcase) {
   const animatedElements = showcase.querySelectorAll(
-    '.history-switcher-card, .event-year-card, .event-overview-card, .event-summary-card, .event-section-card, .history-note-card, .event-story-card, .highlight-card, .activity-card, .sponsor-logo, .testimonial, .previous-event-speaker-card, .speaker-profile'
+    '.history-switcher-card, .event-year-card, .previous-events-detail'
   );
 
   const observer = new IntersectionObserver(function (entries, revealObserver) {

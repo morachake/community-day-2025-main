@@ -189,6 +189,9 @@
 
 .previous-event-panel.active {
   display: block;
+}
+
+.previous-event-panel.active.panel-animate-once {
   animation: panelFadeUp 0.45s ease;
 }
 
