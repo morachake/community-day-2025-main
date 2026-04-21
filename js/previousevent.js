@@ -144,6 +144,9 @@ function initSpeakerCarousel(panel) {
   const isHighlightCarousel = carousel ? carousel.dataset.speakersMode === 'highlight' : false;
   const scrollViewport = isHighlightCarousel ? panel.querySelector('.speaker-grid-viewport') : carousel;
   const slides = carousel ? Array.from(carousel.querySelectorAll('.speaker-profile, .previous-event-speaker-card')) : [];
+  const mobilePaginationQuery = window.matchMedia('(max-width: 768px)');
+  const navigation = dotsContainer ? dotsContainer.parentElement : null;
+  const fractionIndicator = isHighlightCarousel ? document.createElement('div') : null;
 
   if (!carousel || !scrollViewport || !slides.length || !prevButton || !nextButton || !dotsContainer) {
     return;
@@ -155,12 +158,19 @@ function initSpeakerCarousel(panel) {
 
   dotsContainer.innerHTML = '';
 
+  if (isHighlightCarousel && navigation && fractionIndicator) {
+    navigation.classList.add('highlight-pagination');
+    fractionIndicator.className = 'carousel-fraction';
+    fractionIndicator.setAttribute('aria-live', 'polite');
+    fractionIndicator.setAttribute('aria-atomic', 'true');
+  }
+
   const getSlidesPerView = function () {
     if (!isHighlightCarousel) {
       return 1;
     }
 
-    if (window.innerWidth <= 767) {
+    if (mobilePaginationQuery.matches) {
       return 1;
     }
 
@@ -215,6 +225,24 @@ function initSpeakerCarousel(panel) {
     }
   };
 
+  const renderHighlightPagination = function (count) {
+    const useFractionPagination = mobilePaginationQuery.matches;
+
+    dotsContainer.classList.toggle('is-fraction', useFractionPagination);
+
+    if (useFractionPagination && fractionIndicator) {
+      dotsContainer.innerHTML = '';
+      fractionIndicator.textContent = (currentPage + 1) + ' / ' + count;
+      dotsContainer.appendChild(fractionIndicator);
+      return;
+    }
+
+    renderDots(count, 'View speaker group', function (pageIndex) {
+      goToPage(pageIndex);
+    });
+    updateActiveDot(currentPage);
+  };
+
   const refreshStandardCarousel = function (behavior) {
     scrollToSlide(currentIndex, behavior || 'auto');
     updateActiveDot(currentIndex);
@@ -227,15 +255,11 @@ function initSpeakerCarousel(panel) {
     const pageCount = Math.max(1, Math.ceil(slides.length / slidesPerView));
 
     scrollViewport.style.setProperty('--speaker-cards-per-view', String(slidesPerView));
-    currentPage = Math.max(0, Math.min(currentPage, pageCount - 1));
+    currentPage = Math.max(0, Math.min(Math.floor(currentIndex / slidesPerView), pageCount - 1));
     currentIndex = currentPage * slidesPerView;
 
-    renderDots(pageCount, 'View speaker group', function (pageIndex) {
-      goToPage(pageIndex);
-    });
-
+    renderHighlightPagination(pageCount);
     scrollToSlide(currentIndex, behavior || 'auto');
-    updateActiveDot(currentPage);
     prevButton.disabled = currentPage === 0;
     nextButton.disabled = currentPage === pageCount - 1;
   };
@@ -246,8 +270,10 @@ function initSpeakerCarousel(panel) {
   };
 
   const goToPage = function (page) {
-    const pageCount = Math.max(1, Math.ceil(slides.length / getSlidesPerView()));
+    const slidesPerView = getSlidesPerView();
+    const pageCount = Math.max(1, Math.ceil(slides.length / slidesPerView));
     currentPage = Math.max(0, Math.min(page, pageCount - 1));
+    currentIndex = currentPage * slidesPerView;
     refreshHighlightCarousel('smooth');
   };
 
