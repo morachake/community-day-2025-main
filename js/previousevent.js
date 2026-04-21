@@ -138,13 +138,14 @@ function initPanel(panel) {
 
 function initSpeakerCarousel(panel) {
   const carousel = panel.querySelector('.speakers-carousel');
-  const slides = carousel ? Array.from(carousel.querySelectorAll('.speaker-profile, .previous-event-speaker-card')) : [];
   const prevButton = panel.querySelector('.speaker-prev');
   const nextButton = panel.querySelector('.speaker-next');
   const dotsContainer = panel.querySelector('.speaker-dots');
   const isHighlightCarousel = carousel ? carousel.dataset.speakersMode === 'highlight' : false;
+  const scrollViewport = isHighlightCarousel ? panel.querySelector('.speaker-grid-viewport') : carousel;
+  const slides = carousel ? Array.from(carousel.querySelectorAll('.speaker-profile, .previous-event-speaker-card')) : [];
 
-  if (!carousel || !slides.length || !prevButton || !nextButton || !dotsContainer) {
+  if (!carousel || !scrollViewport || !slides.length || !prevButton || !nextButton || !dotsContainer) {
     return;
   }
 
@@ -178,7 +179,16 @@ function initSpeakerCarousel(panel) {
       return;
     }
 
-    carousel.scrollTo({
+    if (isHighlightCarousel) {
+      target.scrollIntoView({
+        behavior: behavior || 'smooth',
+        block: 'nearest',
+        inline: 'start'
+      });
+      return;
+    }
+
+    scrollViewport.scrollTo({
       left: target.offsetLeft,
       behavior: behavior || 'smooth'
     });
@@ -216,7 +226,7 @@ function initSpeakerCarousel(panel) {
     const slidesPerView = getSlidesPerView();
     const pageCount = Math.max(1, Math.ceil(slides.length / slidesPerView));
 
-    carousel.style.setProperty('--speaker-cards-per-view', String(slidesPerView));
+    scrollViewport.style.setProperty('--speaker-cards-per-view', String(slidesPerView));
     currentPage = Math.max(0, Math.min(currentPage, pageCount - 1));
     currentIndex = currentPage * slidesPerView;
 
