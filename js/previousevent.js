@@ -546,7 +546,7 @@ function hydrate2025SpeakerGrid(showcase) {
     return;
   }
 
-  const sources = Array.from(document.querySelectorAll('#speakers .confirmed-speaker-card, #speakers .desktop-only .speaker-card'));
+  const sources = Array.from(document.querySelectorAll('#speakers-2025-lineup-source .confirmed-speaker-card, #speakers-2025-lineup-source .desktop-only .speaker-card'));
   const seenNames = new Set();
 
   container.innerHTML = '';
