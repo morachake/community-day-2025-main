@@ -590,6 +590,9 @@
   --speaker-cards-per-view: 4;
   --speaker-carousel-gap: 22px;
   --speaker-carousel-offset-start: var(--speaker-carousel-gap);
+  /* Size cards with cqi; requires container for percentage width to mean “visible track”, not the flex row */
+  container-type: inline-size;
+  container-name: speaker-grid;
   box-sizing: border-box;
   overflow-x: auto;
   padding-left: var(--speaker-carousel-offset-start);
@@ -608,8 +611,11 @@
 .speaker-grid-showcase.speakers-carousel {
   display: flex;
   min-width: 100%;
+  width: max-content;
+  max-width: none;
   align-items: stretch;
   gap: var(--speaker-carousel-gap);
+  overflow: visible;
 }
 
 .previous-event-speaker-card,
@@ -632,9 +638,27 @@
 }
 
 .speaker-grid-showcase .previous-event-speaker-card {
-  flex: 0 0 calc((100% - (var(--speaker-cards-per-view, 4) - 1) * var(--speaker-carousel-gap)) / var(--speaker-cards-per-view, 4));
-  min-width: calc((100% - (var(--speaker-cards-per-view, 4) - 1) * var(--speaker-carousel-gap)) / var(--speaker-cards-per-view, 4));
+  /* 100% of the flex row made every card 1/n of a row that never grew — use container inline size (viewport) */
+  flex: 0 0
+    calc(
+      (100cqi - (var(--speaker-cards-per-view, 4) - 1) * var(--speaker-carousel-gap)) /
+        var(--speaker-cards-per-view, 4)
+    );
+  min-width: calc(
+    (100cqi - (var(--speaker-cards-per-view, 4) - 1) * var(--speaker-carousel-gap)) / var(--speaker-cards-per-view, 4)
+  );
+  max-width: calc(
+    (100cqi - (var(--speaker-cards-per-view, 4) - 1) * var(--speaker-carousel-gap)) / var(--speaker-cards-per-view, 4)
+  );
   scroll-snap-align: start;
+}
+
+@supports not (min-width: 1cqi) {
+  .speaker-grid-showcase .previous-event-speaker-card {
+    flex: 0 0 280px;
+    min-width: 260px;
+    max-width: 320px;
+  }
 }
 
 .previous-event-speaker-card:hover {
@@ -724,10 +748,20 @@
   -webkit-line-clamp: 4;
 }
 
+/* 2024 archive: this element is the scroll target; hidden overflow broke prev/next. */
 .speakers-carousel {
   display: flex;
-  overflow-x: hidden;
+  overflow-x: auto;
   scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.speakers-carousel::-webkit-scrollbar {
+  display: none;
+}
+/* 2025 highlight: horizontal scroll is on .speaker-grid-viewport; inner row only grows width */
+.speaker-grid-viewport .speakers-carousel.speaker-grid-showcase {
+  overflow: visible;
 }
 
 .speaker-profile {

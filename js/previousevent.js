@@ -191,12 +191,18 @@ function initSpeakerCarousel(panel) {
     }
 
     if (isHighlightCarousel) {
-      const viewportRect = scrollViewport.getBoundingClientRect();
-      const targetRect = target.getBoundingClientRect();
-      const left = scrollViewport.scrollLeft + (targetRect.left - viewportRect.left);
+      const gapStr = window.getComputedStyle(carousel).gap || window.getComputedStyle(carousel).columnGap;
+      const gapPx = gapStr && gapStr !== 'normal' ? parseFloat(gapStr, 10) || 22 : 22;
+      var sumLeft = 0;
+      for (var j = 0; j < safeIndex; j += 1) {
+        if (j > 0) {
+          sumLeft += gapPx;
+        }
+        sumLeft += slides[j].offsetWidth;
+      }
 
       scrollViewport.scrollTo({
-        left: left,
+        left: sumLeft,
         behavior: behavior || 'smooth'
       });
       return;
