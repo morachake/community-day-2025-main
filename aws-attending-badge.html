@@ -70,27 +70,44 @@
       z-index: 100;
     }
 
-    .user>img {
-      width: 142px;
-      height: 136px;
-      margin-top: -107px;
-      margin-left: 0px;
-    }
-
-    .user>.download-img {
-    width: 377px;
-    height: 376px;
-    margin-top: -294px;
-    margin-left: 2px;
-}
-
     #card1 {
       background-image: url(images/badge/6.png);
       background-position: center;
       background-repeat: no-repeat;
       background-size: 100% 100%;
-      /* width: 1080px;
-      height: 1080px; */
+      width: 22em;
+      height: 27.5em;
+      position: relative;
+    }
+
+    #card1 .card-body {
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    #card1 .user {
+      position: absolute;
+      left: 51.2%;
+      top: 45.9%;
+      transform: translate(-50%, -50%);
+      width: 45.7%;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      overflow: hidden;
+      margin: 0;
+      display: block;
+      background: transparent;
+    }
+
+    #card1 .user > img {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
     }
 
     #card2 {
@@ -98,6 +115,13 @@
       background-position: center;
       background-repeat: no-repeat;
       background-size: 100% 100%;
+    }
+
+    .user > .download-img {
+      width: 377px;
+      height: 376px;
+      margin-top: -294px;
+      margin-left: 2px;
     }
   </style>
 </head>
@@ -153,7 +177,7 @@
           <div class="card bphoto-card cardwp" id="card1">
             <div class="card-body">
               <div class="user">
-                <img src="https://awsugjaipur.in/assets/img/Badges/badgeempty.png" alt="user" class="userImg"  id="userImage"/>
+                <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="user" class="userImg" id="userImage"/>
               </div>
             </div>
           </div>
@@ -344,25 +368,23 @@
 
       btnDownload.innerHTML = "Downloading...";
 
-      // Set the width and height for download (2x the original size)
       card1Img.style.width = "1080px";
-      card1Img.style.height = "1080px";
-      const element = document.getElementById("userImage");
-      element.classList.add("download-img");
+      card1Img.style.height = "1350px";
 
       domtoimage.toPng(card1Img).then(function (dataUrl) {
         var img = new Image();
         img.src = dataUrl;
-        element.classList.remove("download-img");
         downloadImage(dataUrl, "badge.png");
 
-        // Reset the width and height to their original values
-        card1Img.style.width = "400px";
-        card1Img.style.height = "400px";
+        card1Img.style.width = "";
+        card1Img.style.height = "";
 
         btnDownload.innerHTML = "Download";
       }).catch(function (error) {
         console.error("Oops, something went wrong!", error);
+        card1Img.style.width = "";
+        card1Img.style.height = "";
+        btnDownload.innerHTML = "Download";
       });
     });
 
