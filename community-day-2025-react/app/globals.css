@@ -1,5 +1,8 @@
 @import url("https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css");
 @import url("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css");
+@import url("/stylesheets/font/goldman.css");
+@import url("/stylesheets/font/open-sans.css");
+@import url("/stylesheets/font/Ubuntu.css");
 @import url("/stylesheets/style.css");
 @import url("/stylesheets/mystyles.css");
 @import url("/stylesheets/previousevent.css");
@@ -11,7 +14,65 @@
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: "Roboto", "Open Sans", sans-serif;
+}
+
+/* ── Heading font ──────────────────────────────────────────── */
+h1, h2, h3, h4, h5,
+.main-heading-ttl,
+.heading-ttl,
+.headin-ttl,
+.headin_h4,
+.keynote-badge,
+.tier-title {
+  font-family: "Goldman", "Exo", "Roboto", sans-serif;
+}
+
+/* ── Buttons: pill shape + icon+text on the same line ──────── */
+.button,
+a.button,
+button.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1 !important;
+  text-decoration: none;
+  border-radius: 50px !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+  font-size: 14px !important;
+}
+
+/* ── Navbar CTA (Book a Spot): flat, full-height, no rounding ─ */
+/* The li.spec anchor sits directly in the navbar bar — it must match the
+   height/shape of every other nav cell exactly. No pill, no gap. */
+#nav-bar > li.spec,
+#page .section-1 #nav-bar > li.spec {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#nav-bar > li.spec a,
+#page .section-1 #nav-bar > li.spec a {
+  border-radius: 0 !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.3px !important;
+  height: 70px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+.button i:not(.material-icons),
+.button span:not(.material-icons),
+a.button i:not(.material-icons) {
+  display: inline !important;
+  line-height: 1;
 }
 
 html.is-restoring-section body {
@@ -21,6 +82,43 @@ html.is-restoring-section body {
 .section-1 {
   min-height: 100vh;
   background: linear-gradient(45deg, #232f3f, #1a2530);
+}
+
+/* ─── Navbar: Uniform cells — font, height, equal width, no gaps ───────── */
+/* style.css never declares a desktop font-size for nav links, so cells vary
+   in width based on text length. We lock every cell to Roboto 13 px / 500 w
+   and set flex-basis:0 so all items start at zero and grow equally (truly
+   equal-width columns). We also fix the Book-a-Spot li height explicitly so
+   `height:100%` on the anchor resolves correctly.                           */
+@media only screen and (min-width: 992px) {
+  /* Equal-width cells */
+  #page .section-1 #nav-bar > ul.main_header_ul li {
+    flex: 1 1 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Uniform Roboto 13 px on every cell (links + archive toggle) */
+  #page .section-1 #nav-bar > ul.main_header_ul li a,
+  #page .section-1 #nav-bar .nav-archive-toggle {
+    font-family: "Roboto", "Open Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+  }
+
+  /* Book a Spot: same height as bar, no flex-grow, no gap */
+  #page .section-1 #nav-bar > li.spec {
+    height: 70px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-items: stretch;
+  }
 }
 
 /* ─── Navbar: Event Archive dropdown ─────────────────────────────────────── */
@@ -221,4 +319,55 @@ html.is-restoring-section body {
 
 .archive-year-main {
   padding-bottom: 48px;
+}
+
+/* ── Archive sponsors: top-down layout — one tier per row ────────────────── */
+/* Override the 3-column horizontal grid so tiers stack vertically, each
+   spanning the full card width. Logos reflow to a uniform multi-per-row row. */
+.sponsor-tier-grid {
+  grid-template-columns: 1fr !important;
+  gap: 20px !important;
+}
+
+.sponsors-tier {
+  height: auto !important;
+}
+
+/* With full-width tiers the logos have more room — show ~4 per row minimum */
+.sponsors-tier .sponsor-logos {
+  gap: 16px;
+  justify-content: flex-start;
+}
+
+.sponsors-tier .sponsor-logo {
+  width: calc(25% - 12px) !important;
+  min-width: 110px;
+  flex: 1 0 110px;
+  max-width: 200px;
+}
+
+/* Platinum & Gold tiers: center the fewer logos */
+.platinum-tier .sponsor-logos,
+.gold-tier .sponsor-logos {
+  justify-content: center;
+}
+
+/* Platinum tier accent */
+.platinum-tier {
+  border-top: 3px solid #ff9900;
+}
+
+/* Gold tier accent */
+.gold-tier {
+  border-top: 3px solid #f0c040;
+}
+
+/* Tier heading: larger and centred to act as a full-width section title */
+.sponsors-tier .tier-title {
+  text-align: center;
+  font-size: 20px;
+  letter-spacing: 0.3px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(35, 47, 63, 0.08);
 }

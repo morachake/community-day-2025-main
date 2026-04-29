@@ -31,6 +31,17 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleDocMouseDown);
   }, [closeArchive]);
 
+  // Allow static HTML sections (sponsors, etc.) to open the modal via a CSS class
+  useEffect(() => {
+    function handleStaticModalTrigger(ev: MouseEvent) {
+      if ((ev.target as Element).closest(".js-open-sponsor-modal")) {
+        setSponsorOpen(true);
+      }
+    }
+    document.addEventListener("click", handleStaticModalTrigger);
+    return () => document.removeEventListener("click", handleStaticModalTrigger);
+  }, []);
+
   return (
     <div id="nav-bar">
       <p id="toggle" aria-label="Open navigation menu">
@@ -39,7 +50,9 @@ export default function Navbar() {
       {/* spec is a direct child of #nav-bar (not inside the ul) — matches original
           navbar.html structure that style.css flex layout depends on */}
       <li className="spec">
-        <a className="buy-ticket-link button">Book a Spot</a>
+        <a href={sectionHref("tickets", pathname)} className="buy-ticket-link button">
+          Book a Spot
+        </a>
       </li>
       <ul className="main_header_ul" role="menubar">
         <li role="none">
@@ -58,6 +71,11 @@ export default function Navbar() {
           </Link>
         </li>
         <li role="none">
+          <Link href={sectionHref("workshop", pathname)} prefetch={false}>
+            Workshops
+          </Link>
+        </li>
+        <li role="none">
           <Link href="/badge/attending" prefetch={false}>
             I will be Attending
           </Link>
@@ -68,13 +86,13 @@ export default function Navbar() {
           </Link>
         </li>
         <li role="none">
-          <button
-            type="button"
-            className="nav-archive-toggle"
-            onClick={() => setSponsorOpen(true)}
+          <a
+            href="https://bit.ly/communityke-exhibitors"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            Sponsor Us
-          </button>
+            Call for Exhibitors
+          </a>
         </li>
         <li role="none">
           <Link href={sectionHref("volunteers", pathname)} prefetch={false}>

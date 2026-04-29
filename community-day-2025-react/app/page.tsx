@@ -12,6 +12,7 @@ import Subscribe from "@/components/home/Subscribe";
 import Venue from "@/components/home/Venue";
 import Volunteers from "@/components/home/Volunteers";
 import Workshops from "@/components/home/Workshops";
+import Footer from "@/components/layout/Footer";
 import FloatingToast from "@/components/layout/FloatingToast";
 import VideoModal from "@/components/shared/VideoModal";
 
@@ -35,6 +36,7 @@ export default function HomePage() {
         <Volunteers />
         <Subscribe />
       </div>
+      <Footer />
       <FloatingToast />
     </>
   );

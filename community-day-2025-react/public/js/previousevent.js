@@ -315,6 +315,20 @@ function initSpeakerCarousel(panel) {
     });
 
     refreshCarousel('auto');
+
+    var highlightAutoTimer = window.setInterval(function () {
+      var slidesPerView = getSlidesPerView();
+      var pageCount = Math.max(1, Math.ceil(slides.length / slidesPerView));
+      goToPage((currentPage + 1) % pageCount);
+    }, 4000);
+
+    var stopHighlightAuto = function () {
+      window.clearInterval(highlightAutoTimer);
+    };
+
+    prevButton.addEventListener('click', stopHighlightAuto);
+    nextButton.addEventListener('click', stopHighlightAuto);
+
     return;
   }
 
@@ -335,6 +349,20 @@ function initSpeakerCarousel(panel) {
   });
 
   refreshStandardCarousel('auto');
+
+  var speakerAutoTimer = window.setInterval(function () {
+    goToSpeaker(currentIndex + 1);
+  }, 4000);
+
+  var stopSpeakerAuto = function () {
+    window.clearInterval(speakerAutoTimer);
+  };
+
+  prevButton.addEventListener('click', stopSpeakerAuto);
+  nextButton.addEventListener('click', stopSpeakerAuto);
+  Array.from(dotsContainer.querySelectorAll('.speaker-dot')).forEach(function (dot) {
+    dot.addEventListener('click', stopSpeakerAuto);
+  });
 }
 
 function initTestimonials(panel) {
@@ -377,23 +405,33 @@ function initTestimonials(panel) {
   prevButton.setAttribute('aria-label', 'Previous testimonial');
   nextButton.setAttribute('aria-label', 'Next testimonial');
 
-  prevButton.addEventListener('click', function () {
-    showTestimonial(currentIndex - 1);
-  });
-
-  nextButton.addEventListener('click', function () {
-    showTestimonial(currentIndex + 1);
-  });
-
   testimonials.forEach(function (testimonial) {
     testimonial.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   });
 
   showTestimonial(0);
 
-  window.setInterval(function () {
+  var testimonialAutoTimer = window.setInterval(function () {
     showTestimonial(currentIndex + 1);
-  }, 8000);
+  }, 5000);
+
+  var stopTestimonialAuto = function () {
+    window.clearInterval(testimonialAutoTimer);
+  };
+
+  prevButton.addEventListener('click', function () {
+    stopTestimonialAuto();
+    showTestimonial(currentIndex - 1);
+  });
+
+  nextButton.addEventListener('click', function () {
+    stopTestimonialAuto();
+    showTestimonial(currentIndex + 1);
+  });
+
+  Array.from(dotsContainer.querySelectorAll('.testimonial-dot')).forEach(function (dot) {
+    dot.addEventListener('click', stopTestimonialAuto);
+  });
 }
 
 function initVideoPreview(panel) {
