@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import SponsorModal from "@/components/sponsor/SponsorModal";
 
 function sectionHref(sectionId: string, pathname: string | null): string {
   if (pathname === "/") return `#${sectionId}`;
@@ -12,6 +13,7 @@ function sectionHref(sectionId: string, pathname: string | null): string {
 export default function Navbar() {
   const pathname = usePathname();
   const [archiveMenuOpen, setArchiveMenuOpen] = useState(false);
+  const [sponsorOpen, setSponsorOpen] = useState(false);
   const archiveWrapperRef = useRef<HTMLLIElement>(null);
 
   const closeArchive = useCallback(() => setArchiveMenuOpen(false), []);
@@ -56,11 +58,6 @@ export default function Navbar() {
           </Link>
         </li>
         <li role="none">
-          <Link href={sectionHref("workshop", pathname)} prefetch={false}>
-            Workshops
-          </Link>
-        </li>
-        <li role="none">
           <Link href="/badge/attending" prefetch={false}>
             I will be Attending
           </Link>
@@ -71,9 +68,13 @@ export default function Navbar() {
           </Link>
         </li>
         <li role="none">
-          <Link href="/sponsor" prefetch={false}>
+          <button
+            type="button"
+            className="nav-archive-toggle"
+            onClick={() => setSponsorOpen(true)}
+          >
             Sponsor Us
-          </Link>
+          </button>
         </li>
         <li role="none">
           <Link href={sectionHref("volunteers", pathname)} prefetch={false}>
@@ -152,6 +153,8 @@ export default function Navbar() {
           </ul>
         </li>
       </ul>
+
+      <SponsorModal open={sponsorOpen} onClose={() => setSponsorOpen(false)} />
     </div>
   );
 }

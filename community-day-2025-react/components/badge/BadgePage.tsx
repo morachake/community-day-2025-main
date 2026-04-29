@@ -276,17 +276,53 @@ export default function BadgePage({
         <section>
           <a
             className="btn btn-outline-light btn-floating m-1"
-            href="https://twitter.com/aws_UGkenya"
+            href="https://x.com/AwsUgpwani"
+            target="_blank"
+            rel="noopener noreferrer"
             role="button"
+            aria-label="X / Twitter"
           >
             <i className="fab fa-twitter"></i>
           </a>
           <a
             className="btn btn-outline-light btn-floating m-1"
-            href="https://www.linkedin.com/company/aws-user-group-kenya"
+            href="https://www.linkedin.com/in/jacob-moracha/"
+            target="_blank"
+            rel="noopener noreferrer"
             role="button"
+            aria-label="LinkedIn"
           >
             <i className="fab fa-linkedin-in"></i>
+          </a>
+          <a
+            className="btn btn-outline-light btn-floating m-1"
+            href="https://www.instagram.com/awspwani/"
+            target="_blank"
+            rel="noopener noreferrer"
+            role="button"
+            aria-label="Instagram"
+          >
+            <i className="fab fa-instagram"></i>
+          </a>
+          <a
+            className="btn btn-outline-light btn-floating m-1"
+            href="https://www.youtube.com/@AwsUgPwani"
+            target="_blank"
+            rel="noopener noreferrer"
+            role="button"
+            aria-label="YouTube"
+          >
+            <i className="fab fa-youtube"></i>
+          </a>
+          <a
+            className="btn btn-outline-light btn-floating m-1"
+            href="https://www.meetup.com/awsugpwani/"
+            target="_blank"
+            rel="noopener noreferrer"
+            role="button"
+            aria-label="Meetup"
+          >
+            <i className="fab fa-meetup"></i>
           </a>
         </section>
         <br />
@@ -299,9 +335,9 @@ export default function BadgePage({
       </div>
 
       <div className="text-center text-white copyright-section p-3">
-        © 2025 Copyright: <a className="text-white" href="#">AWS Kenya</a>
+        © 2026 Copyright: <a className="text-white" href="/">AWS User Group Pwani</a>
         <p className="text-white">
-          Made with <span className="copyright-section-text text-white">&hearts;</span> by AWS Kenya
+          Made with <span className="copyright-section-text text-white">&hearts;</span> by AWS User Group Pwani
         </p>
       </div>
 

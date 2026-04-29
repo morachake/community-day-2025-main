@@ -3,13 +3,7 @@
   if (typeof window.jQuery !== "undefined") {
     window.jQuery(document).ready(function ($) {
       $(".buy-ticket-link").on("click", () => {
-        checkForUtmAvilableOrNot(decodeURIComponent(location.href))
-          .then((formResolve) => {
-            window.open("https://gig.co.ke/event/gev_979/ticket?" + formResolve, "_blank");
-          })
-          .catch(() => {
-            window.open("https://gig.co.ke/event/gev_979/ticket", "_blank");
-          });
+        window.open("https://vybes.africa/vybes/community-day-kenya-pwani-edition", "_blank");
       });
 
       function checkForUtmAvilableOrNot(_currentUrl) {
