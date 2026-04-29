@@ -1,0 +1,224 @@
+@import url("https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css");
+@import url("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css");
+@import url("/stylesheets/style.css");
+@import url("/stylesheets/mystyles.css");
+@import url("/stylesheets/previousevent.css");
+@import url("https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css");
+
+:root {
+  --brand-orange: #ff9900;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+html.is-restoring-section body {
+  visibility: hidden;
+}
+
+.section-1 {
+  min-height: 100vh;
+  background: linear-gradient(45deg, #232f3f, #1a2530);
+}
+
+/* ─── Navbar: Event Archive dropdown ─────────────────────────────────────── */
+
+/* Make the toggle button a pixel-perfect match of every other nav <a> link.
+   style.css sets height:70px + background:#ff9900 at ≥992 px via
+   `#page .section-1 #nav-bar li a` — we replicate those for both contexts:
+   home page (#page .section-1) and archive pages (.archive-page-nav-wrap). */
+
+/* --- shared reset --- */
+#nav-bar .nav-archive-toggle {
+  appearance: none;
+  border: 0;
+  margin: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+#nav-bar .nav-archive-toggle::after {
+  content: " ▾";
+  font-size: 11px;
+  margin-left: 3px;
+}
+
+/* --- desktop: match #page .section-1 #nav-bar li a (height:70px, bg:#ff9900) --- */
+@media only screen and (min-width: 992px) {
+  #page .section-1 #nav-bar li.has-dropdown {
+    position: relative;
+  }
+
+  #page .section-1 #nav-bar .nav-archive-toggle {
+    height: 70px;
+    color: #fff;
+    background: #ff9900;
+  }
+
+  #page .section-1 #nav-bar .nav-archive-toggle:hover {
+    color: #fff;
+    background: #e08a00;
+  }
+
+  /* desktop dropdown panel */
+  #nav-bar ul.main_header_ul li.has-dropdown ul.archive-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+    background: #232f3f;
+    min-width: 210px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    z-index: 9999;
+    float: none;
+  }
+
+  #nav-bar ul.main_header_ul li.has-dropdown.open ul.archive-dropdown-menu,
+  #nav-bar ul.main_header_ul li.has-dropdown:hover ul.archive-dropdown-menu {
+    display: block;
+  }
+
+  #nav-bar ul.main_header_ul li.has-dropdown ul.archive-dropdown-menu li {
+    margin: 0;
+    padding: 0;
+    float: none;
+    height: auto !important;
+    flex-grow: unset;
+  }
+
+  #nav-bar ul.main_header_ul li.has-dropdown ul.archive-dropdown-menu a {
+    display: block;
+    padding: 11px 20px;
+    color: #fff;
+    font-size: 14px;
+    border-left: 3px solid transparent;
+    background: transparent;
+    height: auto;
+    justify-content: flex-start;
+  }
+
+  #nav-bar ul.main_header_ul li.has-dropdown ul.archive-dropdown-menu a:hover,
+  #nav-bar ul.main_header_ul li.has-dropdown ul.archive-dropdown-menu a.active-year {
+    border-left-color: #ff9900;
+    color: #ff9900;
+    background: rgba(255, 153, 0, 0.08);
+  }
+}
+
+/* --- mobile: match full-width sidebar link style (font-size:20px, border-bottom) --- */
+@media only screen and (max-width: 991px) {
+  #nav-bar li.has-dropdown {
+    height: auto !important; /* allow it to expand with submenu */
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  #nav-bar .nav-archive-toggle {
+    justify-content: flex-start;
+    font-size: 20px;
+    padding: 0 25px;
+    color: #fff;
+    background: transparent;
+    height: 65px;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+  }
+
+  /* inline submenu — no absolute positioning on mobile */
+  #nav-bar ul.main_header_ul li.has-dropdown ul.archive-dropdown-menu {
+    display: none;
+    position: static;
+    background: rgba(0, 0, 0, 0.25);
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    float: none;
+    box-shadow: none;
+    border-radius: 0;
+    min-width: 0;
+    width: 100%;
+  }
+
+  #nav-bar ul.main_header_ul li.has-dropdown.open ul.archive-dropdown-menu {
+    display: block;
+  }
+
+  #nav-bar ul.main_header_ul li.has-dropdown ul.archive-dropdown-menu li {
+    margin: 0;
+    padding: 0;
+    float: none;
+    height: auto !important;
+  }
+
+  #nav-bar ul.main_header_ul li.has-dropdown ul.archive-dropdown-menu a {
+    display: flex;
+    align-items: center;
+    padding: 0 25px 0 36px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
+    height: 52px;
+    border-left: 3px solid transparent;
+    background: transparent;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.15);
+  }
+
+  #nav-bar ul.main_header_ul li.has-dropdown ul.archive-dropdown-menu a:hover,
+  #nav-bar ul.main_header_ul li.has-dropdown ul.archive-dropdown-menu a.active-year {
+    border-left-color: #ff9900;
+    color: #ff9900;
+    background: rgba(255, 153, 0, 0.1);
+  }
+}
+
+/* Archive pages now use #page > .section-1.hdr structure identical to the home
+   page, so style.css selectors apply automatically with no extra overrides. */
+
+@media only screen and (max-width: 991px) {
+  /* body padding so archive content isn't hidden behind the fixed bottom nav */
+  #page .archive-year-main {
+    padding-bottom: 70px;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.headin_h4 {
+  color: var(--brand-orange);
+  font-weight: 700;
+}
+
+#event-archive .previous-events-selector {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#event-archive .archive-cta-card {
+  text-decoration: none;
+}
+
+.archive-year-main {
+  padding-bottom: 48px;
+}
