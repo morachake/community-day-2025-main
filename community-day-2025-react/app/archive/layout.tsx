@@ -1,4 +1,5 @@
 import ArchiveHero from "@/components/archive/ArchiveHero";
+import Footer from "@/components/layout/Footer";
 
 export default function ArchiveLayout({
   children,
@@ -6,9 +7,12 @@ export default function ArchiveLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div id="page">
-      <ArchiveHero />
-      {children}
-    </div>
+    <>
+      <div id="page">
+        <ArchiveHero />
+        {children}
+      </div>
+      <Footer />
+    </>
   );
 }

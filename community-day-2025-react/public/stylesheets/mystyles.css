@@ -981,7 +981,13 @@ img {
 }
 
 .organizers-grid {
+    display: flex;
+    flex-wrap: wrap;
     margin-bottom: 80px;
+}
+
+.organizers-grid > [class*="col-"] {
+    display: flex;
 }
 
 .organizer-card {

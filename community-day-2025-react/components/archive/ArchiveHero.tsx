@@ -8,6 +8,8 @@ const YEAR_DATA: Record<string, {
   title: string;
   description: string;
   statLine: string;
+  heroBg: string;
+  heroAlt: string;
   rightCaption: string;
 }> = {
   "2025": {
@@ -16,6 +18,8 @@ const YEAR_DATA: Record<string, {
     description:
       "A full day of keynotes, technical sessions, hands-on workshops, and community networking at KCA University, Nairobi. Over 500 builders, architects, and cloud enthusiasts came together.",
     statLine: "500+ Attendees · 20+ Speakers · KCA University",
+    heroBg: "/images/aws2024/activity1.webp",
+    heroAlt: "AWS Community Day Kenya 2025 crowd",
     rightCaption: "Relive the 2025 edition — sessions, speakers, and community moments.",
   },
   "2024": {
@@ -24,6 +28,8 @@ const YEAR_DATA: Record<string, {
     description:
       "The inaugural full-scale AWS Community Day Kenya — the foundation edition that set the blueprint for annual cloud community events in the region.",
     statLine: "300+ Attendees · 12 Speakers · KCA University",
+    heroBg: "/images/aws2024/activity3.jpeg",
+    heroAlt: "AWS Community Day Kenya 2024 crowd",
     rightCaption: "The foundation edition — discover the 2024 speakers, workshops, and highlights.",
   },
 };
@@ -44,12 +50,13 @@ export default function ArchiveHero() {
         <div className="container">
           <div>
             {/* LEFT — info panels */}
-            <div wid="50%" className="left">
+            <div className="left" style={{ flex: "0 0 50%", maxWidth: "50%" }}>
               <div
                 className="left_in"
                 style={{ padding: "40px 0", maxWidth: "90%", margin: "0 auto" }}
               >
                 {/* Logo */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/community-day-logo.png"
                   alt="AWS Community Day Kenya"
@@ -181,65 +188,40 @@ export default function ArchiveHero() {
               </div>
             </div>
 
-            {/* RIGHT — photo gallery */}
-            <div wid="50%" className="right">
+            {/* RIGHT — single hero image matching 2026 hero-content.html structure */}
+            <div className="right" style={{ flex: "0 0 50%", maxWidth: "50%" }}>
               <div
                 className="gal flex-it col"
-                style={{ filter: "brightness(0.85)" }}
+                style={{
+                  overflow: "hidden",
+                  borderRadius: "16px",
+                  boxShadow: "0 24px 60px rgba(0,0,0,0.4)",
+                }}
               >
-                <div className="top f1 flex-it">
-                  <div
-                    className="f2 ims im1"
-                    style={{
-                      backgroundImage: "url('/images/aws2024/activity1.webp')",
-                      transition: "all 0.3s ease",
-                    }}
-                  />
-                  <div
-                    className="f1 ims im2"
-                    style={{
-                      backgroundImage: "url('/images/aws2024/activity2.webp')",
-                      transition: "all 0.3s ease",
-                    }}
-                  />
-                </div>
-                <div className="bot f1 flex-it">
-                  <div
-                    className="f1 ims im3"
-                    style={{
-                      backgroundImage: "url('/images/aws2024/activity3.jpeg')",
-                      transition: "all 0.3s ease",
-                    }}
-                  />
-                  <div className="f2 flex-it col">
-                    <div className="f1 flex-it">
-                      <div
-                        className="f1 ims im4"
-                        style={{
-                          backgroundImage: "url('/images/aws2024/activity4.webp')",
-                          transition: "all 0.3s ease",
-                        }}
-                      />
-                      <div
-                        className="f1 ims im5"
-                        style={{
-                          backgroundImage: "url('/images/aws2024/activity5.webp')",
-                          transition: "all 0.3s ease",
-                        }}
-                      />
-                    </div>
-                    <div
-                      className="f1 ims im6"
-                      style={{
-                        backgroundImage: "url('/images/aws2024/activity6.jpeg')",
-                        transition: "all 0.3s ease",
-                      }}
-                    />
-                  </div>
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={d.heroBg}
+                  alt={d.heroAlt}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                    filter: "brightness(0.88)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(to top, rgba(26,37,48,0.6) 0%, transparent 55%)",
+                  }}
+                />
               </div>
               <div className="right_in" style={{ zIndex: 10, position: "relative" }}>
                 <p className="awsug_logo">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/images/AWSKenyaLogo.png"
                     height={180}
@@ -267,21 +249,24 @@ export default function ArchiveHero() {
                   href="/"
                   className="white icon-grp rt"
                   style={{
+                    display: "inline-flex",
+                    alignItems: "center",
                     borderRadius: "50px",
                     padding: "0px 25px",
                     fontWeight: 600,
                     letterSpacing: "0.5px",
                     boxShadow: "rgba(0,0,0,0.2) 0px 4px 15px",
-                    display: "inline-flex",
-                    alignItems: "center",
+                    transition: "transform 0.3s",
                     textDecoration: "none",
-                    height: "50px",
-                    color: "#ff9900",
-                    background: "#fff",
-                    fontSize: "15px",
                   }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.transform = "translateY(-5px)")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.transform = "translateY(0)")
+                  }
                 >
-                  ← Back to AWS 2026
+                  ← Back to AWS Community Day 2026
                   <i
                     className="icon large ion-md-home"
                     style={{ color: "#ff9900", marginLeft: "10px" }}

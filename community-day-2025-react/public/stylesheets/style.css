@@ -5579,7 +5579,7 @@ input:focus:not(:focus-visible) {
     left: 0;
     right: 0;
     height: 100%;
-    background: url("images/aws2024/activity3.jpeg") center center/cover
+    background: url("/images/aws2024/activity3.jpeg") center center/cover
       no-repeat;
     opacity: 0.2;
     z-index: 0;
@@ -5651,7 +5651,7 @@ input:focus:not(:focus-visible) {
   right: 0;
   bottom: 0;
   left: 0;
-  background: url('images/aws2024/activity2.webp') center/cover no-repeat;
+  background: url('/images/aws2024/activity2.webp') center/cover no-repeat;
   opacity: 0.05;
   z-index: 0;
 }
@@ -6186,4 +6186,11 @@ input:focus:not(:focus-visible) {
 
 #page .section-8 h4 {
   color: #fff;
+}
+/* Hero CTA button hover lift — replaces inline onmouseover/onmouseout */
+.hero-cta-btn {
+  transition: transform 0.3s ease;
+}
+.hero-cta-btn:hover {
+  transform: translateY(-5px);
 }
