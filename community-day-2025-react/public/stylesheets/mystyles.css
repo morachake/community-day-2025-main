@@ -1968,6 +1968,17 @@ img {
     color: #1a2530;
 }
 
+/* The "Show your interest" subscribe section had no background of its own.
+   The hero (.section-1 .content) is position:fixed and only fades out on
+   scroll; on this short page it never fully fades, so it bled through the
+   transparent subscribe section that sits just below the Organizing
+   Committee. Give it a solid dark background so nothing shows through. */
+#page #subscribe.section-7 {
+    background: #232f3f;
+    position: relative;
+    z-index: 2;
+}
+
 /* 2026 note above classic 2025 Werner keynote block */
 .featured-keynote .keynote-year-kicker {
     text-align: center;

@@ -62,7 +62,7 @@ export default function Footer() {
                 <i className="fa fa-linkedin" />
               </a>
               <a
-                href="mailto:awsusergroup.kenya@gmail.com"
+                href="mailto:awspwaniug@gmail.com"
                 aria-label="Email AWS UG Kenya"
                 style={iconLinkStyle}
               >
@@ -183,10 +183,10 @@ export default function Footer() {
           <i className="icon ion-md-mail" style={{ color: "#ff9900" }} />
           <span>Questions?</span>
           <a
-            href="mailto:awsusergroup.kenya@gmail.com"
+            href="mailto:awspwaniug@gmail.com"
             style={{ color: "#ff9900", textDecoration: "none" }}
           >
-            awsusergroup.kenya@gmail.com
+            awspwaniug@gmail.com
           </a>
         </div>
       </div>
