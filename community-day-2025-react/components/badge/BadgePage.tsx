@@ -3,6 +3,8 @@
 import domtoimage from "dom-to-image";
 import Script from "next/script";
 import { useCallback, useEffect } from "react";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 
 export type BadgePageProps = {
   /** HTML snippet for `#paragraphToCopy` (supports `<br>`). */
@@ -71,6 +73,16 @@ export default function BadgePage({
 
     btn.innerHTML = "Downloading...";
 
+    // Neutralise the responsive scale + frame clipping so the capture is
+    // the full 1080px card regardless of viewport size.
+    const frame = cardWithPhoto.parentElement;
+    if (frame) {
+      frame.style.width = "auto";
+      frame.style.height = "auto";
+      frame.style.overflow = "visible";
+    }
+    cardWithPhoto.style.transform = "none";
+    cardWithPhoto.style.margin = "0";
     cardWithPhoto.style.width = "1080px";
     cardWithPhoto.style.height = "1080px";
     imgEl.classList.add("download-img");
@@ -85,6 +97,13 @@ export default function BadgePage({
     } finally {
       cardWithPhoto.style.width = "400px";
       cardWithPhoto.style.height = "400px";
+      cardWithPhoto.style.transform = "";
+      cardWithPhoto.style.margin = "";
+      if (frame) {
+        frame.style.width = "";
+        frame.style.height = "";
+        frame.style.overflow = "";
+      }
       btn.innerHTML = "Download";
     }
   }, [downloads.withPhotoFilename, downloadImageBlob]);
@@ -96,6 +115,14 @@ export default function BadgePage({
     if (!cardNoPhoto || !btn) return;
 
     btn.innerHTML = "Downloading...";
+    const frame = cardNoPhoto.parentElement;
+    if (frame) {
+      frame.style.width = "auto";
+      frame.style.height = "auto";
+      frame.style.overflow = "visible";
+    }
+    cardNoPhoto.style.transform = "none";
+    cardNoPhoto.style.margin = "0";
     cardNoPhoto.style.width = "1080px";
     cardNoPhoto.style.height = "1080px";
 
@@ -107,13 +134,16 @@ export default function BadgePage({
     } finally {
       cardNoPhoto.style.width = "400px";
       cardNoPhoto.style.height = "400px";
+      cardNoPhoto.style.transform = "";
+      cardNoPhoto.style.margin = "";
+      if (frame) {
+        frame.style.width = "";
+        frame.style.height = "";
+        frame.style.overflow = "";
+      }
       btn.innerHTML = "Download";
     }
   }, [downloads.withoutPhotoFilename, downloadImageBlob]);
-
-  const toggleMobileNav = useCallback(() => {
-    document.querySelector("#navbar")?.classList.toggle("navbar-mobile");
-  }, []);
 
   return (
     <>
@@ -156,34 +186,154 @@ export default function BadgePage({
               background-repeat: no-repeat;
               background-size: 100% 100%;
             }
+
+            /* ── Match site theme: navy (#232f3f / #1a2530) + AWS orange (#ff9900) ── */
+            body { background: #1a2530 !important; }
+
+            /* Navbar wrapper: collapse the full-height hero so only the bar shows */
+            .badge-navwrap.section-1 {
+              min-height: 0;
+              background: #232f3f;
+            }
+
+            /* Hero overlay → brand navy gradient + spacing so the heading
+               clears the navbar and content never crowds the copy block */
+            #phero {
+              background-attachment: fixed;
+              padding: 40px 0 60px;
+            }
+            #phero:before {
+              background: linear-gradient(45deg, #232f3f, #1a2530);
+              opacity: 0.92;
+            }
+            #phero .phero-container { margin-top: 0; padding: 0 15px; }
+            #phero h1 {
+              font-family: "Goldman", "Exo", "Roboto", sans-serif;
+              color: #fff;
+              text-shadow: none;
+              letter-spacing: 1px;
+              line-height: 1.08;
+              margin-bottom: 1rem;
+            }
+            #phero h1 span { color: #ff9900; text-shadow: none; }
+
+            /* Copy-to-clipboard block — generous padding so the button can
+               never clip out of its rounded container */
+            .copy-text-wrapper { width: 100%; margin-bottom: 2.5rem; }
+            .copy-text-wrapper .copy-text-heading {
+              font-family: "Roboto", "Open Sans", sans-serif;
+              max-width: 720px;
+              margin: 0 auto 18px;
+              line-height: 1.4;
+            }
+            .copy-text-wrapper .inner-text-content-full .copy-content-inner-wrapper {
+              background-color: rgba(35, 47, 63, 0.65);
+              border: 1px solid rgba(255, 255, 255, 0.12);
+              border-radius: 12px;
+              padding: 24px 22px;
+            }
+            .copy-text-wrapper #paragraphToCopy {
+              margin: 0 0 18px;
+              line-height: 1.6;
+              word-break: break-word;
+            }
+            .copy-text-wrapper #copyButton {
+              margin: 0;
+              border: 1px solid #ff9900;
+              color: #ff9900;
+            }
+            .copy-text-wrapper #copyButton:hover,
+            .copy-text-wrapper #copyButton:focus {
+              background-color: #ff9900;
+              color: #1a2530;
+            }
+
+            /* Badge builder cards + headings */
+            #bphoto h2, #bnophoto h2 {
+              font-family: "Goldman", "Exo", "Roboto", sans-serif;
+              color: #fff;
+            }
+            .bphoto-card {
+              background: #232f3f;
+              box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            }
+            .photo_upload { gap: 1rem; padding: 1.5rem 1rem 2rem; }
+            #d1_photo { margin-top: 20px; }
+
+            /* Download buttons → AWS orange pills */
+            #d_photo, #d1_photo {
+              font-family: "Roboto", "Open Sans", sans-serif;
+              background-color: #ff9900;
+              color: #1a2530;
+              border: 2px solid #ff9900;
+              box-shadow: 0 6px 18px rgba(255, 153, 0, 0.25);
+            }
+            #d_photo:hover, #d1_photo:hover {
+              background-color: #e08a00;
+              border-color: #e08a00;
+              color: #fff;
+            }
+
+            /* File input label colour on dark bg */
+            #mypht { color: #cad0db; max-width: 100%; }
+
+            /* Inspired-by credit + back-to-top accent */
+            .badge-credit { color: rgba(255, 255, 255, 0.75); }
+            .badge-credit .email__link { color: #ff9900; }
+            .back-to-top { background: #ff9900; }
+            .back-to-top i { color: #1a2530; }
+
+            /* ── Responsive ─────────────────────────────────────────── */
+            /* Tablet & below: leave room for the fixed bottom nav bar */
+            @media (max-width: 991px) {
+              #page { padding-bottom: 80px; }
+              #phero { padding: 30px 0 50px; }
+              #phero h1 { font-size: 40px; }
+            }
+
+            /* Phones: shrink hero text + copy box, and scale the fixed-size
+               400px badge cards down as a unit so they fit the screen while
+               keeping the photo overlay perfectly aligned. The scale is reset
+               during PNG capture (see download handlers) so downloads stay
+               full 1080px resolution. */
+            /* The badge card is a fixed 400px with a pixel-positioned photo
+               overlay. On phones we scale the whole card as a unit (so the
+               overlay stays aligned) inside a frame whose REAL size matches
+               the scaled card — using overflow:hidden so the 400px card no
+               longer expands the page width (which was clipping the layout).
+               The scale is reset during PNG capture (download handlers). */
+            .badge-card-frame { margin: 0 auto; }
+
+            @media (max-width: 600px) {
+              #phero { padding: 24px 0 40px; background-attachment: scroll; }
+              #phero h1 { font-size: 30px; letter-spacing: 0.5px; }
+              .copy-text-wrapper .copy-text-heading { font-size: 19px; }
+              .copy-text-wrapper .inner-text-content-full .copy-content-inner-wrapper { padding: 18px 14px; }
+
+              .photo_upload { flex-direction: column; align-items: center; }
+              .photo_upload > div { margin: 1rem 0; padding-top: 8px; }
+
+              .badge-card-frame { width: 320px; height: 320px; overflow: hidden; }
+              .cardwp, .cardwop {
+                transform: scale(0.8);
+                transform-origin: top left;
+                margin: 0;
+              }
+            }
+
+            /* Very small phones */
+            @media (max-width: 360px) {
+              #phero h1 { font-size: 26px; }
+              .badge-card-frame { width: 272px; height: 272px; }
+              .cardwp, .cardwop { transform: scale(0.68); }
+            }
           `,
         }}
       />
-      <header id="header" className="d-flex align-items-center">
-        <div className="container-fluid container-xxl d-flex align-items-center">
-          <div id="logo" className="me-auto">
-            <a href="/" className="scrollto">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/AWSKenyaLogo.png" alt="navbar-logo" />
-            </a>
-          </div>
-
-          <nav id="navbar" className="navbar order-last order-lg-0">
-            <ul>
-              <li>
-                <a className="buy-tickets scrollto navbar-top-btn" href="/">
-                  <i className="fas fa-arrow-left" style={{ paddingRight: 10 }}></i> Home
-                </a>
-              </li>
-            </ul>
-            <i
-              className="fas fa-bars mobile-nav-toggle"
-              role="presentation"
-              onClick={toggleMobileNav}
-            />
-          </nav>
-        </div>
-      </header>
+      <div id="page">
+      <div className="section-1 badge-navwrap" id="home">
+        <Navbar />
+      </div>
 
       <section id="phero">
         <div className="phero-container" data-aos="zoom-in" data-aos-delay="100">
@@ -220,16 +370,18 @@ export default function BadgePage({
               <h2>
                 <b>With your Photo</b>
               </h2>
-              <div className="card bphoto-card cardwp" id="card1">
-                <div className="card-body">
-                  <div className="user">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="https://awsugjaipur.in/assets/img/Badges/badgeempty.png"
-                      alt="user"
-                      className="userImg"
-                      id="userImage"
-                    />
+              <div className="badge-card-frame">
+                <div className="card bphoto-card cardwp" id="card1">
+                  <div className="card-body">
+                    <div className="user">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="https://awsugjaipur.in/assets/img/Badges/badgeempty.png"
+                        alt="user"
+                        className="userImg"
+                        id="userImage"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -257,9 +409,11 @@ export default function BadgePage({
               <h2>
                 <b>Without your Photo</b>
               </h2>
-              <div className="card bphoto-card cardwop" id="card2">
-                <div className="card-body">
-                  <div className="text"></div>
+              <div className="badge-card-frame">
+                <div className="card bphoto-card cardwop" id="card2">
+                  <div className="card-body">
+                    <div className="text"></div>
+                  </div>
                 </div>
               </div>
               <div>
@@ -272,74 +426,15 @@ export default function BadgePage({
         </div>
       </section>
 
-      <div className="container text-center p-4 pb-0">
-        <section>
-          <a
-            className="btn btn-outline-light btn-floating m-1"
-            href="https://x.com/AwsUgpwani"
-            target="_blank"
-            rel="noopener noreferrer"
-            role="button"
-            aria-label="X / Twitter"
-          >
-            <i className="fab fa-twitter"></i>
+        <div className="badge-credit container text-center p-4 pb-0">
+          <strong>Badge inspired from</strong>{" "}
+          <a className="email__link" href="https://awsugjaipur.in/">
+            AWS UG Jaipur
           </a>
-          <a
-            className="btn btn-outline-light btn-floating m-1"
-            href="https://www.linkedin.com/in/jacob-moracha/"
-            target="_blank"
-            rel="noopener noreferrer"
-            role="button"
-            aria-label="LinkedIn"
-          >
-            <i className="fab fa-linkedin-in"></i>
-          </a>
-          <a
-            className="btn btn-outline-light btn-floating m-1"
-            href="https://www.instagram.com/awspwani/"
-            target="_blank"
-            rel="noopener noreferrer"
-            role="button"
-            aria-label="Instagram"
-          >
-            <i className="fab fa-instagram"></i>
-          </a>
-          <a
-            className="btn btn-outline-light btn-floating m-1"
-            href="https://www.youtube.com/@AwsUgPwani"
-            target="_blank"
-            rel="noopener noreferrer"
-            role="button"
-            aria-label="YouTube"
-          >
-            <i className="fab fa-youtube"></i>
-          </a>
-          <a
-            className="btn btn-outline-light btn-floating m-1"
-            href="https://www.meetup.com/awsugpwani/"
-            target="_blank"
-            rel="noopener noreferrer"
-            role="button"
-            aria-label="Meetup"
-          >
-            <i className="fab fa-meetup"></i>
-          </a>
-        </section>
-        <br />
-        <strong className="text-white">Badge Inspired from</strong>
-        <a className="email__link" href="https://awsugjaipur.in/">
-          AWS UG Jaipur
-        </a>
-        <br />
-        <br />
+        </div>
       </div>
 
-      <div className="text-center text-white copyright-section p-3">
-        © 2026 Copyright: <a className="text-white" href="/">AWS User Group Pwani</a>
-        <p className="text-white">
-          Made with <span className="copyright-section-text text-white">&hearts;</span> by AWS User Group Pwani
-        </p>
-      </div>
+      <Footer />
 
       <a href="#" className="back-to-top d-flex align-items-center justify-content-center">
         <i className="fas fa-arrow-up"></i>
