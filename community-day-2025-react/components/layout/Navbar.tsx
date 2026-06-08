@@ -86,15 +86,6 @@ export default function Navbar() {
           </Link>
         </li>
         <li role="none">
-          <a
-            href="https://bit.ly/communityke-exhibitors"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Call for Exhibitors
-          </a>
-        </li>
-        <li role="none">
           <Link href={sectionHref("volunteers", pathname)} prefetch={false}>
             Organizing Committee
           </Link>
