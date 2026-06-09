@@ -2,7 +2,10 @@
 
 import domtoimage from "dom-to-image";
 import Script from "next/script";
-import { useCallback, useEffect } from "react";
+import type { ChangeEvent } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import AttendingBadgeCanvas from "@/components/badge/AttendingBadgeCanvas";
+import type { AttendingBadgeLayout } from "@/lib/badge/attendingBadgeCanvas";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
@@ -11,19 +14,42 @@ export type BadgePageProps = {
   paragraphHtml: string;
   backgrounds: {
     withPhoto: string;
-    withoutPhoto: string;
+    withoutPhoto?: string;
   };
   downloads: {
     withPhotoFilename: string;
-    withoutPhotoFilename: string;
+    withoutPhotoFilename?: string;
   };
+  showWithoutPhotoCard?: boolean;
+  /** Pwani attending badge rendered on canvas instead of legacy DOM overlay. */
+  useCanvasBuilder?: boolean;
+  canvasDefaults?: {
+    name?: string;
+    title?: string;
+  };
+  canvasLayout?: AttendingBadgeLayout;
 };
 
 export default function BadgePage({
   paragraphHtml,
   backgrounds,
   downloads,
+  showWithoutPhotoCard = true,
+  useCanvasBuilder = false,
+  canvasDefaults,
+  canvasLayout,
 }: BadgePageProps) {
+  const cardWithPhotoRef = useRef<HTMLDivElement>(null);
+  const cardNoPhotoRef = useRef<HTMLDivElement>(null);
+  const userImageRef = useRef<HTMLImageElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const downloadWithPhotoBtnRef = useRef<HTMLButtonElement>(null);
+  const downloadWithoutPhotoBtnRef = useRef<HTMLButtonElement>(null);
+  const [photoSrc, setPhotoSrc] = useState("");
+  const [photoName, setPhotoName] = useState("");
+  const canShowWithoutPhotoCard =
+    showWithoutPhotoCard && Boolean(backgrounds.withoutPhoto && downloads.withoutPhotoFilename);
+
   useEffect(() => {
     const t = window.setTimeout(() => {
       window.AOS?.init({
@@ -60,13 +86,37 @@ export default function BadgePage({
     document.body.removeChild(link);
   }, []);
 
+  const handlePhotoUpload = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload an image file");
+      event.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPhotoSrc(reader.result as string);
+      setPhotoName(file.name);
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  const handleResetPhoto = useCallback(() => {
+    setPhotoSrc("");
+    setPhotoName("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, []);
+
   const handleDownloadWithPhoto = useCallback(async () => {
-    const cardWithPhoto = document.querySelector(".cardwp") as HTMLElement | null;
-    const btn = document.querySelector("#d_photo") as HTMLButtonElement | null;
-    const imgEl = document.getElementById("userImage") as HTMLElement | null;
-    const inputEl = document.getElementById("mypht") as HTMLInputElement | null;
-    const file = inputEl?.files?.[0];
-    if (!cardWithPhoto || !btn || !imgEl || !file) {
+    const cardWithPhoto = cardWithPhotoRef.current;
+    const btn = downloadWithPhotoBtnRef.current;
+    const imgEl = userImageRef.current;
+    if (!cardWithPhoto || !btn || !imgEl || !photoSrc) {
       alert("Please upload a photo");
       return;
     }
@@ -106,13 +156,14 @@ export default function BadgePage({
       }
       btn.innerHTML = "Download";
     }
-  }, [downloads.withPhotoFilename, downloadImageBlob]);
+  }, [downloads.withPhotoFilename, downloadImageBlob, photoSrc]);
 
   const handleDownloadWithoutPhoto = useCallback(async () => {
-    const cardNoPhoto = document.querySelector(".cardwop") as HTMLElement | null;
-    const btn = document.querySelector("#d1_photo") as HTMLButtonElement | null;
+    const cardNoPhoto = cardNoPhotoRef.current;
+    const btn = downloadWithoutPhotoBtnRef.current;
+    const filename = downloads.withoutPhotoFilename;
 
-    if (!cardNoPhoto || !btn) return;
+    if (!cardNoPhoto || !btn || !filename) return;
 
     btn.innerHTML = "Downloading...";
     const frame = cardNoPhoto.parentElement;
@@ -128,7 +179,7 @@ export default function BadgePage({
 
     try {
       const dataUrl = await domtoimage.toPng(cardNoPhoto);
-      downloadImageBlob(dataUrl, downloads.withoutPhotoFilename);
+      downloadImageBlob(dataUrl, filename);
     } catch (e) {
       console.error(e);
     } finally {
@@ -180,11 +231,15 @@ export default function BadgePage({
               background-repeat: no-repeat;
               background-size: 100% 100%;
             }
-            #card2 {
-              background-image: url("${backgrounds.withoutPhoto}");
-              background-position: center;
-              background-repeat: no-repeat;
-              background-size: 100% 100%;
+            ${
+              backgrounds.withoutPhoto
+                ? `#card2 {
+                    background-image: url("${backgrounds.withoutPhoto}");
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                  }`
+                : ""
             }
 
             /* ── Match site theme: navy (#232f3f / #1a2530) + AWS orange (#ff9900) ── */
@@ -259,6 +314,177 @@ export default function BadgePage({
             }
             .photo_upload { gap: 1rem; padding: 1.5rem 1rem 2rem; }
             #d1_photo { margin-top: 20px; }
+            .badge-builder-panel {
+              max-width: 540px;
+            }
+            .badge-upload-panel {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 14px;
+              margin-top: 18px;
+            }
+            .badge-upload-actions {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-wrap: wrap;
+              gap: 10px;
+            }
+            .badge-upload-label,
+            .badge-reset-photo {
+              min-width: 148px;
+              margin: 0;
+              padding: 12px 18px;
+              border-radius: 6px;
+              font-family: "Roboto", "Open Sans", sans-serif;
+              font-weight: 700;
+              line-height: 1;
+              cursor: pointer;
+              transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+            }
+            .badge-upload-label {
+              background: #ffffff;
+              border: 2px solid #ffffff;
+              color: #1a2530;
+            }
+            .badge-upload-label:hover,
+            .badge-upload-label:focus-within {
+              background: #cad0db;
+              border-color: #cad0db;
+            }
+            .badge-reset-photo {
+              background: transparent;
+              border: 2px solid rgba(255, 255, 255, 0.34);
+              color: #ffffff;
+            }
+            .badge-reset-photo:hover,
+            .badge-reset-photo:focus {
+              border-color: #ffffff;
+            }
+            .badge-file-input {
+              clip: rect(0 0 0 0);
+              clip-path: inset(50%);
+              height: 1px;
+              overflow: hidden;
+              position: absolute;
+              white-space: nowrap;
+              width: 1px;
+            }
+            .badge-upload-status {
+              min-height: 22px;
+              margin: 0;
+              color: #cad0db;
+              font-size: 14px;
+              line-height: 1.45;
+            }
+            .badge-upload-status strong {
+              color: #ffffff;
+              font-weight: 700;
+            }
+            .badge-photo-placeholder {
+              width: 142px;
+              height: 136px;
+              margin-top: -107px;
+              margin-left: 0;
+              border-radius: 50%;
+              border: 2px dashed rgba(255, 255, 255, 0.82);
+              background: rgba(17, 24, 39, 0.58);
+              color: #ffffff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 12px;
+              text-align: center;
+              font-size: 13px;
+              line-height: 1.25;
+            }
+            .badge-photo-help {
+              max-width: 340px;
+              margin: 0;
+              color: rgba(255, 255, 255, 0.72);
+              font-size: 13px;
+              line-height: 1.45;
+            }
+            .attending-badge-canvas {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 18px;
+            }
+            .attending-badge-frame {
+              position: relative;
+              width: min(100%, var(--badge-preview-width, 500px));
+              aspect-ratio: 819 / 1024;
+              margin: 0 auto;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+              background: #0b1018;
+            }
+            .attending-badge-preview {
+              display: block;
+              width: 100%;
+              height: 100%;
+              pointer-events: none;
+            }
+            .attending-badge-hitarea {
+              display: block;
+              width: 100%;
+              height: 100%;
+              padding: 0;
+              border: 0;
+              background: transparent;
+              cursor: pointer;
+            }
+            .attending-badge-hitarea:focus-visible {
+              outline: 2px solid #ff9900;
+              outline-offset: 3px;
+            }
+            .attending-badge-rendering {
+              position: absolute;
+              right: 10px;
+              bottom: 10px;
+              padding: 4px 8px;
+              border-radius: 999px;
+              background: rgba(0, 0, 0, 0.55);
+              color: #fff;
+              font-size: 11px;
+            }
+            .badge-field-grid {
+              display: grid;
+              grid-template-columns: 1fr;
+              gap: 12px;
+              width: min(100%, 420px);
+            }
+            .badge-field {
+              display: flex;
+              flex-direction: column;
+              gap: 6px;
+              text-align: left;
+            }
+            .badge-field span {
+              color: #cad0db;
+              font-size: 13px;
+              font-weight: 600;
+            }
+            .badge-field input {
+              width: 100%;
+              padding: 11px 12px;
+              border: 1px solid rgba(255, 255, 255, 0.18);
+              border-radius: 6px;
+              background: rgba(17, 24, 39, 0.72);
+              color: #fff;
+              font-family: "Roboto", "Open Sans", sans-serif;
+              font-size: 14px;
+            }
+            .badge-field input::placeholder {
+              color: rgba(255, 255, 255, 0.42);
+            }
+            .badge-field input:focus {
+              outline: none;
+              border-color: #ff9900;
+            }
 
             /* Download buttons → AWS orange pills */
             #d_photo, #d1_photo {
@@ -273,9 +499,16 @@ export default function BadgePage({
               border-color: #e08a00;
               color: #fff;
             }
-
-            /* File input label colour on dark bg */
-            #mypht { color: #cad0db; max-width: 100%; }
+            #d_photo:disabled {
+              cursor: not-allowed;
+              opacity: 0.56;
+              box-shadow: none;
+            }
+            #d_photo:disabled:hover {
+              background-color: #ff9900;
+              border-color: #ff9900;
+              color: #1a2530;
+            }
 
             /* Inspired-by credit + back-to-top accent */
             .badge-credit { color: rgba(255, 255, 255, 0.75); }
@@ -312,6 +545,15 @@ export default function BadgePage({
 
               .photo_upload { flex-direction: column; align-items: center; }
               .photo_upload > div { margin: 1rem 0; padding-top: 8px; }
+              .badge-upload-actions { width: 100%; }
+              .badge-upload-label,
+              .badge-reset-photo,
+              #d_photo,
+              #d1_photo { width: min(100%, 260px); }
+
+              .attending-badge-frame {
+                width: min(calc(100vw - 32px), var(--badge-preview-width, 500px));
+              }
 
               .badge-card-frame { width: 320px; height: 320px; overflow: hidden; }
               .cardwp, .cardwop {
@@ -366,62 +608,110 @@ export default function BadgePage({
           </div>
 
           <div className="photo_upload">
-            <div id="bphoto">
+            <div id="bphoto" className="badge-builder-panel">
               <h2>
-                <b>With your Photo</b>
+                <b>Create your photobooth badge</b>
               </h2>
-              <div className="badge-card-frame">
-                <div className="card bphoto-card cardwp" id="card1">
-                  <div className="card-body">
-                    <div className="user">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src="https://awsugjaipur.in/assets/img/Badges/badgeempty.png"
-                        alt="user"
-                        className="userImg"
-                        id="userImage"
-                      />
+              {useCanvasBuilder ? (
+                <AttendingBadgeCanvas
+                  downloadFilename={downloads.withPhotoFilename}
+                  defaultName={canvasDefaults?.name}
+                  defaultTitle={canvasDefaults?.title}
+                  layout={canvasLayout}
+                />
+              ) : (
+                <>
+                  <div className="badge-card-frame">
+                    <div className="card bphoto-card cardwp" id="card1" ref={cardWithPhotoRef}>
+                      <div className="card-body">
+                        <div className="user">
+                          {photoSrc ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              ref={userImageRef}
+                              src={photoSrc}
+                              alt="Uploaded attendee"
+                              className="userImg"
+                              id="userImage"
+                            />
+                          ) : (
+                            <div className="badge-photo-placeholder" aria-hidden="true">
+                              Upload your photo
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="badge-upload-panel">
+                    <div className="badge-upload-actions">
+                      <label className="badge-upload-label" htmlFor="mypht">
+                        Upload Photo
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          id="mypht"
+                          className="badge-file-input"
+                          accept="image/*"
+                          onChange={handlePhotoUpload}
+                        />
+                      </label>
+                      {photoSrc ? (
+                        <button type="button" className="badge-reset-photo" onClick={handleResetPhoto}>
+                          Remove Photo
+                        </button>
+                      ) : null}
+                    </div>
+                    <p className="badge-upload-status" aria-live="polite">
+                      {photoName ? (
+                        <>
+                          Selected: <strong>{photoName}</strong>
+                        </>
+                      ) : (
+                        "Choose a clear square or portrait photo for the best result."
+                      )}
+                    </p>
+                    <button
+                      type="button"
+                      id="d_photo"
+                      ref={downloadWithPhotoBtnRef}
+                      disabled={!photoSrc}
+                      aria-disabled={!photoSrc}
+                      onClick={() => void handleDownloadWithPhoto()}
+                    >
+                      Download
+                    </button>
+                    <p className="badge-photo-help">
+                      Your photo stays in this browser and is only used to generate your downloadable badge.
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+            {canShowWithoutPhotoCard ? (
+              <div id="bnophoto">
+                <h2>
+                  <b>Without your Photo</b>
+                </h2>
+                <div className="badge-card-frame">
+                  <div className="card bphoto-card cardwop" id="card2" ref={cardNoPhotoRef}>
+                    <div className="card-body">
+                      <div className="text"></div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div>
-                <input
-                  type="file"
-                  id="mypht"
-                  style={{ paddingTop: 18 }}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    const image = document.querySelector(".userImg") as HTMLImageElement | null;
-                    if (!file || !image) return;
-                    const reader = new FileReader();
-                    reader.onload = () => image.setAttribute("src", reader.result as string);
-                    reader.readAsDataURL(file);
-                  }}
-                />
-                <br />
-                <button type="button" id="d_photo" onClick={() => void handleDownloadWithPhoto()}>
-                  Download
-                </button>
-              </div>
-            </div>
-            <div id="bnophoto">
-              <h2>
-                <b>Without your Photo</b>
-              </h2>
-              <div className="badge-card-frame">
-                <div className="card bphoto-card cardwop" id="card2">
-                  <div className="card-body">
-                    <div className="text"></div>
-                  </div>
+                <div>
+                  <button
+                    type="button"
+                    id="d1_photo"
+                    ref={downloadWithoutPhotoBtnRef}
+                    onClick={() => void handleDownloadWithoutPhoto()}
+                  >
+                    Download
+                  </button>
                 </div>
               </div>
-              <div>
-                <button type="button" id="d1_photo" onClick={() => void handleDownloadWithoutPhoto()}>
-                  Download
-                </button>
-              </div>
-            </div>
+            ) : null}
           </div>
         </div>
       </section>

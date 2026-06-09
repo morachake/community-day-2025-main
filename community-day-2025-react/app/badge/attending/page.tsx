@@ -13,13 +13,13 @@ export default function AttendingBadgePage() {
     <BadgePage
       paragraphHtml={COPY_ATTENDING}
       backgrounds={{
-        withPhoto: "/images/badge/6.png",
-        withoutPhoto: "/images/badge/10.png",
+        withPhoto: "/images/badge/attending-pwani-template.png",
       }}
       downloads={{
-        withPhotoFilename: "badge.png",
-        withoutPhotoFilename: "awsattending.png",
+        withPhotoFilename: "aws-community-day-kenya-2026-attending-badge.png",
       }}
+      showWithoutPhotoCard={false}
+      useCanvasBuilder
     />
   );
 }

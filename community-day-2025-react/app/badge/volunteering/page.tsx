@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import BadgePage from "@/components/badge/BadgePage";
+import { VOLUNTEERING_PWANI_LAYOUT } from "@/lib/badge/attendingBadgeCanvas";
 
 export const metadata: Metadata = {
   title: "I will be volunteering · AWS Community Day Kenya 2026",
@@ -13,13 +14,14 @@ export default function VolunteerBadgePage() {
     <BadgePage
       paragraphHtml={COPY_VOLUNTEER}
       backgrounds={{
-        withPhoto: "/images/badge/6b.png",
-        withoutPhoto: "/images/badge/10b.png",
+        withPhoto: "/images/badge/volunteering-pwani-template.png",
       }}
       downloads={{
-        withPhotoFilename: "badge.png",
-        withoutPhotoFilename: "awsvolunteering.png",
+        withPhotoFilename: "aws-community-day-kenya-2026-volunteering-badge.png",
       }}
+      showWithoutPhotoCard={false}
+      useCanvasBuilder
+      canvasLayout={VOLUNTEERING_PWANI_LAYOUT}
     />
   );
 }

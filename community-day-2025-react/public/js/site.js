@@ -259,9 +259,13 @@ $(function() {
                 secidx = i + 1;
             }
         });
+        var $volunteers = $("#volunteers");
+        if (!$volunteers.length) {
+            return;
+        }
         if (
             $(this).scrollTop() + $(this).height() >
-            $("#volunteers").offset().top
+            $volunteers.offset().top
         ) {
             $(".floating_toast a")
                 .attr("href", "#home")
@@ -274,23 +278,30 @@ $(function() {
     }
 
     function tableScroll() {
+        var $table = $(".table");
+        if (!$table.length) {
+            return;
+        }
+        var tableTop = $table.offset().top;
+        var tableHeight = $table.height();
+        var navHeight = $("#nav-bar").height();
         if (
-            $(this).scrollTop() > $(".table").offset().top - $("#nav-bar").height() &&
-            $(this).scrollTop() < $(".table").offset().top + $(".table").height()
+            $(this).scrollTop() > tableTop - navHeight &&
+            $(this).scrollTop() < tableTop + tableHeight
         ) {
-            $(".table").addClass("fixit");
-            $(".table").removeClass("absit");
+            $table.addClass("fixit");
+            $table.removeClass("absit");
         } else if (
-            $(this).scrollTop() > $(".table").offset().top - $("#nav-bar").height() &&
-            $(this).scrollTop() > $(".table").offset().top + $(".table").height()
+            $(this).scrollTop() > tableTop - navHeight &&
+            $(this).scrollTop() > tableTop + tableHeight
         ) {
-            $(".table").addClass("absit");
-            $(".table").removeClass("fixit");
+            $table.addClass("absit");
+            $table.removeClass("fixit");
         } else if (
             $(this).scrollTop() <
-            $(".table").offset().top - $("#nav-bar").height()
+            tableTop - navHeight
         ) {
-            $(".table")
+            $table
                 .removeClass("absit")
                 .removeClass("fixit");
         }

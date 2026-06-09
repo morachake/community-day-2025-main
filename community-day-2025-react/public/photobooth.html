@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS Community Day Kenya 2025 - Photo Booth</title>
+    <title>AWS Community Day Kenya 2026 - Attendee Photobooth</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,9 @@
 
         body {
             font-family: 'Arial', 'Helvetica', sans-serif;
-            background: #f8f9fa;
+            background:
+                radial-gradient(circle at top left, rgba(255, 153, 0, 0.16), transparent 32rem),
+                #f6f7f9;
             color: #333;
             line-height: 1.6;
         }
@@ -27,25 +29,48 @@
         /* Header - borrowed style from your main site */
         .header {
             text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(45deg, #232f3f, #1a2530);
+            padding: 34px 20px;
+            background: linear-gradient(135deg, #111827, #232f3f 58%, #34445a);
             color: white;
             margin-bottom: 40px;
             border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff9900, #00a1c9, #7aa116);
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 3rem);
             margin-bottom: 15px;
             color: #ff9900;
             font-weight: 700;
+            letter-spacing: 0;
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
+        }
+
+        .header-badge {
+            display: inline-block;
+            margin-bottom: 12px;
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 999px;
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
         /* Main content layout */
@@ -59,7 +84,7 @@
         .frame-section {
             flex: 2;
             background: white;
-            padding: 0px;
+            padding: 0;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -69,7 +94,7 @@
             max-width: 500px;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
         }
@@ -77,27 +102,29 @@
         /* Simple frame header */
         .frame-header {
             background: #232f3f;
-            padding: 20px;
+            padding: 20px 18px;
             color: white;
             text-align: center;
         }
 
         .frame-header h3 {
             color: #ff9900;
-            font-size: 1.4rem;
+            font-size: 1.55rem;
             margin-bottom: 5px;
         }
 
         .frame-header p {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             opacity: 0.8;
         }
 
         /* Photo area */
         .photo-area {
-            padding: 0px;
+            padding: 0;
             min-height: 400px;
-            background: #f8f9fa;
+            background:
+                linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82)),
+                url('images/booth.png') center/cover;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -108,6 +135,8 @@
             height: 360px;
             display: grid;
             gap: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.78);
         }
 
         .collage-grid.layout-2x2 {
@@ -133,8 +162,8 @@
         }
 
         .photo-slot {
-            background: #e9ecef;
-            border: 2px dashed #ccc;
+            background: rgba(233, 236, 239, 0.86);
+            border: 2px dashed #9aa4b2;
             border-radius: 6px;
             display: flex;
             align-items: center;
@@ -185,7 +214,7 @@
 
         /* Simple frame footer */
         .frame-footer {
-            background: #ff9900;
+            background: linear-gradient(90deg, #ff9900, #ec7211);
             color: white;
             padding: 15px 20px;
             display: flex;
@@ -308,7 +337,7 @@
 
         .btn-primary {
             background: #ff9900;
-            color: white;
+            color: #111827;
         }
 
         .btn-primary:hover {
@@ -477,8 +506,9 @@
     <div class="container">
         <!-- Simple Header -->
         <div class="header">
-            <h1>AWS Community Day Kenya 2025</h1>
-            <p>Create memorable photos from Kenya's biggest cloud computing event</p>
+            <span class="header-badge">Attendee Photobooth</span>
+            <h1>I'm Attending AWS Community Day Kenya 2026</h1>
+            <p>Create a share-ready attendee photo from Kenya's biggest cloud computing community event.</p>
         </div>
 
         <!-- Main Content -->
@@ -488,8 +518,8 @@
                 <div class="frame-wrapper">
                     <!-- Frame Header -->
                     <div class="frame-header">
-                        <h3>AWS Community Day Kenya</h3>
-                        <p>14th June 2025 • Build, Innovate, Inspire</p>
+                        <h3>I'm Attending</h3>
+                        <p>AWS Community Day Kenya 2026 • Build, Innovate, Inspire</p>
                     </div>
                     
                     <!-- Photo Area -->
@@ -502,7 +532,7 @@
                     <!-- Frame Footer -->
                     <div class="frame-footer">
                         <span>@aws_UGkenya</span>
-                        <span>#awscommunitydayke2025</span>
+                        <span>#AWSCommunityDayKE</span>
                     </div>
                 </div>
             </div>
@@ -558,7 +588,7 @@
                     </div>
                     <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
                     <div class="info-text">
-                        <strong>Tip:</strong> Upload up to 4 photos or drag and drop them onto the frame
+                        <strong>Tip:</strong> Upload up to 4 photos, tap a slot to replace it, or drag photos onto the frame.
                     </div>
                 </div>
 
@@ -583,7 +613,7 @@
                         <button class="share-btn download" id="downloadBtn">Download</button>
                     </div>
                     <div class="info-text">
-                        Use hashtag: <strong>#awscommunitydayke2025</strong>
+                        Use hashtag: <strong>#AWSCommunityDayKE</strong>
                     </div>
                 </div>
             </div>
@@ -812,7 +842,7 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `aws-community-day-kenya-2025-${Date.now()}.jpg`;
+                    a.download = `aws-community-day-kenya-2026-attending-${Date.now()}.jpg`;
                     a.click();
                     URL.revokeObjectURL(url);
                 } else {
@@ -833,11 +863,11 @@
             ctx.fillStyle = '#ff9900';
             ctx.font = `bold ${width * 0.03}px Arial`;
             ctx.textAlign = 'center';
-            ctx.fillText('AWS Community Day Kenya', width / 2, padding + headerHeight * 0.4);
+            ctx.fillText("I'm Attending", width / 2, padding + headerHeight * 0.4);
             
             ctx.fillStyle = 'white';
             ctx.font = `${width * 0.02}px Arial`;
-            ctx.fillText('14th June 2025 • Build, Innovate, Inspire', width / 2, padding + headerHeight * 0.75);
+            ctx.fillText('AWS Community Day Kenya 2026 • Build, Innovate, Inspire', width / 2, padding + headerHeight * 0.75);
             
             // Photo area
             const photoY = padding + headerHeight + padding * 0.3;
@@ -858,7 +888,7 @@
             ctx.fillText('@aws_UGkenya', padding + 20, footerY + footerHeight * 0.7);
             
             ctx.textAlign = 'right';
-            ctx.fillText('#awscommunitydayke2025', width - padding - 20, footerY + footerHeight * 0.7);
+            ctx.fillText('#AWSCommunityDayKE', width - padding - 20, footerY + footerHeight * 0.7);
         }
 
         async function drawCollage(ctx, x, y, width, height) {
@@ -947,7 +977,7 @@
        function shareToSocial(blob, platform) {
            const reader = new FileReader();
            reader.onloadend = function() {
-               const text = `Amazing experience at AWS Community Day Kenya 2025! #awscommunitydayke2025 #aws #cloudcomputing`;
+               const text = `I'm attending AWS Community Day Kenya 2026! #AWSCommunityDayKE #AWS #CloudComputing`;
                let shareUrl = '';
                
                switch (platform) {
@@ -966,7 +996,7 @@
                const url = URL.createObjectURL(blob);
                const a = document.createElement('a');
                a.href = url;
-               a.download = `aws-community-day-kenya-2025-${platform}-${Date.now()}.jpg`;
+               a.download = `aws-community-day-kenya-2026-attending-${platform}-${Date.now()}.jpg`;
                a.click();
                URL.revokeObjectURL(url);
                
