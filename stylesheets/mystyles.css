@@ -453,6 +453,86 @@ img {
     transition: all 0.3s ease;
 }
 
+.sessionize-speakers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 22px;
+    margin: 36px auto 50px;
+}
+
+.sessionize-speaker-card {
+    min-height: 285px;
+    padding: 26px 20px 24px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sessionize-speaker-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,153,0,0.55);
+    box-shadow: 0 18px 34px rgba(0,0,0,0.24);
+}
+
+.sessionize-speaker-photo {
+    width: 118px;
+    height: 118px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    border: 3px solid #ff9900;
+    overflow: hidden;
+    background: rgba(35,47,63,0.9);
+}
+
+.sessionize-speaker-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.sessionize-speaker-name {
+    margin: 0 0 10px;
+    color: #fff;
+    font-size: 20px;
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+.sessionize-speaker-tagline {
+    margin: 0;
+    color: rgba(255,255,255,0.78);
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.sessionize-speaker-badge {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: rgba(255,153,0,0.18);
+    color: #ff9900;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.sessionize-speakers-state {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 24px;
+    color: rgba(255,255,255,0.82);
+    text-align: center;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 991px) {
     .keynote-speaker-info {
@@ -1975,4 +2055,3 @@ img {
     border-radius: 10px;
     border: 1px solid rgba(255, 153, 0, 0.35);
 }
-
