@@ -21,12 +21,13 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://awsusergroupkenya.co.ke"),
   manifest: "/manifest.json",
-  title: "AWS Community Day Kenya 2026 | July 4 | Mombasa, Kenya",
+  title: "AWS Community Day Kenya 2026 | July 4 | Swahilipot Hub, Mombasa",
   description:
-    "Join AWS Community Day Kenya 2026 on July 4 in Mombasa. The Builder's Blueprint: architecting for tomorrow—keynotes, technical sessions, workshops, and networking with the Kenya AWS community. Register and stay updated!",
+    "Join AWS Community Day Kenya 2026 on July 4 at Swahilipot Hub in Mombasa. The Builder's Blueprint: architecting for tomorrow—keynotes, technical sessions, workshops, and networking with the Kenya AWS community. Register and stay updated!",
   keywords: [
     "AWS Community Day Kenya 2026",
     "AWS Mombasa",
+    "Swahilipot Hub",
     "cloud computing conference Kenya",
     "AWS User Group Kenya",
   ],
@@ -51,9 +52,9 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "AWS Community Day Kenya 2026 - July 4 | Mombasa",
+    title: "AWS Community Day Kenya 2026 - July 4 | Swahilipot Hub, Mombasa",
     description:
-      "Join AWS Community Day Kenya 2026 in Mombasa, July 4. The Builder's Blueprint: architecting for tomorrow—sessions, workshops, and community networking.",
+      "Join AWS Community Day Kenya 2026 at Swahilipot Hub in Mombasa, July 4. The Builder's Blueprint: architecting for tomorrow—sessions, workshops, and community networking.",
     type: "website",
     url: "https://awsusergroupkenya.co.ke",
     siteName: "AWS User Group Kenya",
@@ -63,7 +64,7 @@ export const metadata: Metadata = {
         url: "https://awsusergroupkenya.co.ke/images/AWS_CommunityDay_Kenya-2025.jpeg",
         width: 1200,
         height: 630,
-        alt: "AWS Community Day Kenya 2026 - Mombasa",
+        alt: "AWS Community Day Kenya 2026 - Swahilipot Hub, Mombasa",
       },
     ],
   },
@@ -71,9 +72,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@aws_UGkenya",
     creator: "@aws_UGkenya",
-    title: "AWS Community Day Kenya 2026 - July 4 | Mombasa",
+    title: "AWS Community Day Kenya 2026 - July 4 | Swahilipot Hub, Mombasa",
     description:
-      "AWS Community Day Kenya 2026—July 4 in Mombasa. Keynotes, technical sessions, workshops, and the Kenya AWS community.",
+      "AWS Community Day Kenya 2026—July 4 at Swahilipot Hub in Mombasa. Keynotes, technical sessions, workshops, and the Kenya AWS community.",
     images: [
       "https://awsusergroupkenya.co.ke/images/AWS_CommunityDay_Kenya-2025.jpeg",
     ],

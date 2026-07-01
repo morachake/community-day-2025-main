@@ -6,6 +6,7 @@ import Hero from "@/components/home/Hero";
 import Keynote from "@/components/home/Keynote";
 import Organizers from "@/components/home/Organizers";
 import ArchiveCta from "@/components/home/ArchiveCta";
+import Panels from "@/components/home/Panels";
 import Speakers from "@/components/home/Speakers";
 import Sponsors from "@/components/home/Sponsors";
 import Subscribe from "@/components/home/Subscribe";
@@ -23,6 +24,7 @@ export default function HomePage() {
         <Hero />
         <Keynote />
         <Speakers />
+        <Panels />
         <Agenda />
         <ArchiveCta />
         <VideoModal />
