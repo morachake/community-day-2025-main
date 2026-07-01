@@ -10,10 +10,10 @@ export const eventLd = {
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   location: {
     "@type": "Place",
-    name: "Swahilipot Hub Foundation",
+    name: "Swahilipot Hub",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Swahilipot Hub Foundation",
+      streetAddress: "Swahilipot Hub, Swahili Cultural Centre",
       addressLocality: "Mombasa",
       addressRegion: "Mombasa County",
       addressCountry: "KE",
@@ -84,7 +84,7 @@ export const faqLd = {
       name: "When is AWS Community Day Kenya 2026?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "AWS Community Day Kenya 2026 is on July 4, 2026, from 7:00 AM at Swahilipot Hub Foundation, Mombasa, Kenya.",
+        text: "AWS Community Day Kenya 2026 is on July 4, 2026, from 7:00 AM at Swahilipot Hub in Mombasa, Kenya.",
       },
     },
     {
