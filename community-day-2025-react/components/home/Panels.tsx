@@ -14,7 +14,7 @@ type Member = {
 };
 
 type Panel = {
-  category: string;
+  category?: string;
   theme: string;
   members: Member[];
 };
@@ -128,7 +128,6 @@ const panels: Panel[] = [
     ],
   },
   {
-    category: "Persons With Disability in Tech",
     theme:
       "Startups, Academia and Industry: Who Is Building What and Are We Building It Together?",
     members: [
@@ -237,16 +236,18 @@ export default function Panels() {
         </p>
 
         {panels.map((panel) => (
-          <div className="panel-group" key={panel.category}>
+          <div className="panel-group" key={panel.theme}>
             <div className="panel-group-head">
-              <span className="panel-group-tag">{panel.category}</span>
+              {panel.category && (
+                <span className="panel-group-tag">{panel.category}</span>
+              )}
               <h5 className="panel-group-title">{panel.theme}</h5>
             </div>
             <div className="panel-members-grid">
               {panel.members.map((member, index) => (
                 <article
                   className="panel-member-card"
-                  key={`${panel.category}-${member.name}-${index}`}
+                  key={`${panel.theme}-${member.name}-${index}`}
                 >
                   <span
                     className={

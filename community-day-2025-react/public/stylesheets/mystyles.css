@@ -2248,3 +2248,129 @@ img {
     border: 1px solid rgba(255, 153, 0, 0.35);
 }
 
+/* ── Code of Conduct page ──────────────────────────────────── */
+.coc-page {
+    background: #1a2530;
+    color: rgba(255, 255, 255, 0.88);
+    min-height: 100vh;
+}
+
+.coc-hero {
+    background: linear-gradient(135deg, #232f3f 0%, #1a2530 100%);
+    padding: 90px 0 60px;
+    border-bottom: 1px solid rgba(255, 153, 0, 0.35);
+}
+
+.coc-eyebrow {
+    color: #ff9900;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+}
+
+.coc-title {
+    color: #fff;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    margin: 0 0 18px;
+    letter-spacing: -0.5px;
+}
+
+.coc-subtitle {
+    max-width: 760px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 16px;
+}
+
+.coc-updated {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+.coc-body {
+    padding: 50px 15px 70px;
+    max-width: 860px;
+}
+
+.coc-section {
+    margin-bottom: 40px;
+}
+
+.coc-section h2 {
+    color: #ff9900;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 14px;
+}
+
+.coc-section p {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 14px;
+}
+
+.coc-section ul {
+    margin: 0 0 14px;
+    padding-left: 22px;
+}
+
+.coc-section li {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.82);
+    margin-bottom: 10px;
+}
+
+.coc-body a {
+    color: #ff9900;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 153, 0, 0.4);
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.coc-body a:hover {
+    color: #ffb84d;
+    border-bottom-color: #ffb84d;
+}
+
+.coc-cta {
+    margin-top: 50px;
+    padding: 28px 30px;
+    background: rgba(255, 153, 0, 0.08);
+    border: 1px solid rgba(255, 153, 0, 0.35);
+    border-radius: 14px;
+}
+
+.coc-cta p {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 18px;
+}
+
+.coc-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ff9900;
+    color: #1a2530 !important;
+    font-weight: 600;
+    padding: 12px 26px;
+    border-radius: 50px;
+    text-decoration: none;
+    border: none !important;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.coc-back:hover {
+    color: #1a2530 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(255, 153, 0, 0.3);
+}
+

@@ -127,6 +127,11 @@ export default function Footer() {
                   Organizing Committee
                 </Link>
               </li>
+              <li>
+                <Link href="/code-of-conduct" style={linkStyle} prefetch={false}>
+                  Code of Conduct
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -204,7 +209,14 @@ export default function Footer() {
       >
         <div className="container">
           © {year} AWS User Group Kenya · AWS Community Day Kenya is a community-organized event
-          and is not officially affiliated with Amazon Web Services, Inc.
+          and is not officially affiliated with Amazon Web Services, Inc. ·{" "}
+          <Link
+            href="/code-of-conduct"
+            style={{ color: "#ff9900", textDecoration: "none" }}
+            prefetch={false}
+          >
+            Code of Conduct
+          </Link>
         </div>
       </div>
     </footer>
