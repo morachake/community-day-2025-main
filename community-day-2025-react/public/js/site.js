@@ -5,23 +5,6 @@ $(function() {
         shouldRestore: false,
         completed: false
     };
-    var SECTION_HASH_SELECTOR = [
-        "#home",
-        "#werner-vogels-keynote",
-        "#speakers",
-        "#agenda",
-        "#event-archive",
-        "#com_info",
-        "#venues",
-        "#workshop",
-        "#sponsors",
-        "#volunteers",
-        "#subscribe"
-    ].join(", ");
-    var trackedSections = $(SECTION_HASH_SELECTOR).filter(function() {
-        return this.id;
-    });
-    var lastKnownHash = window.location.hash;
     var isProgrammaticScroll = false;
     var scheduleFrame = window.requestAnimationFrame || function(callback) {
         return window.setTimeout(callback, 0);
@@ -53,18 +36,13 @@ $(function() {
         }
     }
 
-    function updateUrlHash(hash, createHistoryEntry) {
-        if (!hash || hash === lastKnownHash || !window.history || !window.history.replaceState) {
+    function clearUrlHash() {
+        if (!window.location.hash || !window.history || !window.history.replaceState) {
             return;
         }
 
-        if (createHistoryEntry && window.history.pushState) {
-            window.history.pushState(null, "", hash);
-        } else {
-            window.history.replaceState(null, "", hash);
-        }
-
-        lastKnownHash = hash;
+        var cleanUrl = window.location.pathname + window.location.search;
+        window.history.replaceState(null, "", cleanUrl);
     }
 
     function scrollToHash(hash, animateScroll) {
@@ -98,27 +76,9 @@ $(function() {
         return true;
     }
 
-    function getCurrentSectionHash() {
-        var threshold = $(window).scrollTop() + getScrollOffset() + 20;
-        var currentHash = "#home";
-
-        trackedSections.each(function() {
-            if ($(this).offset().top <= threshold) {
-                currentHash = "#" + this.id;
-            } else {
-                return false;
-            }
-        });
-
-        return currentHash;
-    }
-
     function syncHashWithViewport() {
-        if (isProgrammaticScroll || !trackedSections.length) {
-            return;
-        }
-
-        updateUrlHash(getCurrentSectionHash(), false);
+        // Keep URLs clean: never write the active section hash to the address bar.
+        clearUrlHash();
     }
 
     function updateScrollState(shouldSyncHash) {
@@ -164,19 +124,15 @@ $(function() {
         var restoreHash = initialRestoreState.hash;
 
         if (!initialRestoreState.shouldRestore || !restoreHash) {
-            syncHashWithViewport();
+            clearUrlHash();
             finishInitialRestore();
             return;
         }
 
         scheduleFrame(function() {
-            var restored = scrollToHash(restoreHash, false);
+            scrollToHash(restoreHash, false);
             updateScrollState(false);
-
-            if (!restored) {
-                syncHashWithViewport();
-            }
-
+            clearUrlHash();
             finishInitialRestore();
         });
     }
@@ -322,8 +278,8 @@ $(function() {
         }
 
         event.preventDefault();
-        updateUrlHash(hash, true);
         scrollToHash(hash, true);
+        clearUrlHash();
     });
 
     restoreInitialSection();

@@ -21,7 +21,6 @@ const FEATURED_SPEAKERS: Speaker[] = [
     tagLine:
       "Founder, Takabest Limited · Community & Tech Lead, Pwani Teknowgalz · Technical Lead, Angular Kenya",
     profilePicture: "/images/panelists/christal riziki.jpg",
-    isTopSpeaker: true,
   },
 ];
 
